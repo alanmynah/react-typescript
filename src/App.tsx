@@ -8,10 +8,10 @@ import { Header } from "./components/Header";
 export class App extends React.Component {
     public render() {
         return (
-            <Container>
+            <div>
                 <Header />
                 <GitSearch />
                 <Footer />
-            </Container>);
+            </div>);
     }
 }

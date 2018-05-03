@@ -45646,13 +45646,12 @@ module.exports = function(module) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(/*! react */ "react");
-const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "./node_modules/semantic-ui-react/dist/es/index.js");
 const Footer_1 = __webpack_require__(/*! ./components/Footer */ "./src/components/Footer.tsx");
 const GitSearch_1 = __webpack_require__(/*! ./components/GitSearch */ "./src/components/GitSearch.tsx");
 const Header_1 = __webpack_require__(/*! ./components/Header */ "./src/components/Header.tsx");
 class App extends React.Component {
     render() {
-        return (React.createElement(semantic_ui_react_1.Container, null,
+        return (React.createElement("div", null,
             React.createElement(Header_1.Header, null),
             React.createElement(GitSearch_1.GitSearch, null),
             React.createElement(Footer_1.Footer, null)));
@@ -45675,13 +45674,12 @@ exports.App = App;
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(/*! react */ "react");
 const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "./node_modules/semantic-ui-react/dist/es/index.js");
-exports.Footer = () => (React.createElement(semantic_ui_react_1.Segment, { inverted: true, vertical: true, style: { margin: "5em 0em 0em", padding: "5em 0em" } },
-    React.createElement(semantic_ui_react_1.Container, { textAlign: "center" },
-        React.createElement(semantic_ui_react_1.List, { horizontal: true, inverted: true, divided: true, link: true },
-            React.createElement(semantic_ui_react_1.List.Item, { as: "a", href: "#" }, "Site Map"),
-            React.createElement(semantic_ui_react_1.List.Item, { as: "a", href: "#" }, "Contact Us"),
-            React.createElement(semantic_ui_react_1.List.Item, { as: "a", href: "#" }, "Terms and Conditions"),
-            React.createElement(semantic_ui_react_1.List.Item, { as: "a", href: "#" }, "Privacy Policy")))));
+exports.Footer = () => (React.createElement(semantic_ui_react_1.Menu, { fixed: "bottom", inverted: true },
+    React.createElement(semantic_ui_react_1.Segment, { inverted: true, vertical: true, style: { margin: "2em 0em 0em", padding: "1em 0em" } },
+        React.createElement(semantic_ui_react_1.Container, { textAlign: "center" },
+            React.createElement(semantic_ui_react_1.List, { horizontal: true, inverted: true, divided: true, link: true },
+                React.createElement(semantic_ui_react_1.Icon, { name: "github" }),
+                React.createElement(semantic_ui_react_1.List.Item, { as: "a", href: "https://github.com/alanmynah/react-typescript" }, "GitHub"))))));
 
 
 /***/ }),
@@ -45697,7 +45695,53 @@ exports.Footer = () => (React.createElement(semantic_ui_react_1.Segment, { inver
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(/*! react */ "react");
-exports.GitSearch = () => (React.createElement("div", null, "Hello from GitSearch"));
+const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "./node_modules/semantic-ui-react/dist/es/index.js");
+const Search_1 = __webpack_require__(/*! ./GitSearch/Search */ "./src/components/GitSearch/Search.tsx");
+exports.GitSearch = () => (React.createElement(semantic_ui_react_1.Container, { text: true, style: { marginTop: "7em" } },
+    React.createElement(semantic_ui_react_1.Header, { as: "h1" }, "This is a GitHub Search Bar"),
+    React.createElement("p", null, "Go ahead and find some interesting repos"),
+    React.createElement(Search_1.default, null),
+    React.createElement("p", null, "Hopefully, office friendly...")));
+
+
+/***/ }),
+
+/***/ "./src/components/GitSearch/Search.tsx":
+/*!*********************************************!*\
+  !*** ./src/components/GitSearch/Search.tsx ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(/*! react */ "react");
+class SearchBar extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { value: "" };
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+    handleChange(event) {
+        this.setState({ value: event.target.value });
+        console.log({ value: event.target.value });
+    }
+    handleSubmit(event) {
+        console.log("Searching for repo: " + this.state.value);
+        event.preventDefault();
+        this.setState({ value: "" });
+    }
+    render() {
+        return (React.createElement("form", { onSubmit: this.handleSubmit },
+            React.createElement("label", null,
+                "Search:",
+                React.createElement("input", { type: "text", value: this.state.value, onChange: this.handleChange })),
+            React.createElement("input", { type: "submit", value: "Submit" })));
+    }
+}
+exports.default = SearchBar;
 
 
 /***/ }),
@@ -45716,21 +45760,7 @@ const React = __webpack_require__(/*! react */ "react");
 const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "./node_modules/semantic-ui-react/dist/es/index.js");
 exports.Header = () => (React.createElement(semantic_ui_react_1.Menu, { fixed: "top", inverted: true },
     React.createElement(semantic_ui_react_1.Container, null,
-        React.createElement(semantic_ui_react_1.Menu.Item, { as: "a", header: true }, "React-Typescript Project"),
-        React.createElement(semantic_ui_react_1.Menu.Item, { as: "a" }, "Home"),
-        React.createElement(semantic_ui_react_1.Dropdown, { item: true, simple: true, text: "Dropdown" },
-            React.createElement(semantic_ui_react_1.Dropdown.Menu, null,
-                React.createElement(semantic_ui_react_1.Dropdown.Item, null, "List Item"),
-                React.createElement(semantic_ui_react_1.Dropdown.Item, null, "List Item"),
-                React.createElement(semantic_ui_react_1.Dropdown.Divider, null),
-                React.createElement(semantic_ui_react_1.Dropdown.Header, null, "Header Item"),
-                React.createElement(semantic_ui_react_1.Dropdown.Item, null,
-                    React.createElement("i", { className: "dropdown icon" }),
-                    React.createElement("span", { className: "text" }, "Submenu"),
-                    React.createElement(semantic_ui_react_1.Dropdown.Menu, null,
-                        React.createElement(semantic_ui_react_1.Dropdown.Item, null, "List Item"),
-                        React.createElement(semantic_ui_react_1.Dropdown.Item, null, "List Item"))),
-                React.createElement(semantic_ui_react_1.Dropdown.Item, null, "List Item"))))));
+        React.createElement(semantic_ui_react_1.Menu.Item, { as: "a", header: true }, "React-Typescript Project"))));
 
 
 /***/ }),
