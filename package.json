@@ -1,0 +1,19 @@
+{
+  "name": "react-typescript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alanmynah/react-typescript.git"
+  },
+  "author": "mrybintsev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alanmynah/react-typescript/issues"
+  },
+  "homepage": "https://github.com/alanmynah/react-typescript#readme"
+}
