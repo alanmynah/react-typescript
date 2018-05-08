@@ -10,7 +10,6 @@ export const Footer: React.SFC<{}> = () => (
       >
         <Container textAlign="center">
           <List horizontal inverted divided link>
-            <Icon name="github" />
             <List.Item as="a" href="https://github.com/alanmynah/react-typescript">GitHub</List.Item>
           </List>
         </Container>

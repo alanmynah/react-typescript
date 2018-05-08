@@ -45678,7 +45678,6 @@ exports.Footer = () => (React.createElement(semantic_ui_react_1.Menu, { fixed: "
     React.createElement(semantic_ui_react_1.Segment, { inverted: true, vertical: true, style: { margin: "2em 0em 0em", padding: "1em 0em" } },
         React.createElement(semantic_ui_react_1.Container, { textAlign: "center" },
             React.createElement(semantic_ui_react_1.List, { horizontal: true, inverted: true, divided: true, link: true },
-                React.createElement(semantic_ui_react_1.Icon, { name: "github" }),
                 React.createElement(semantic_ui_react_1.List.Item, { as: "a", href: "https://github.com/alanmynah/react-typescript" }, "GitHub"))))));
 
 
@@ -45696,20 +45695,44 @@ exports.Footer = () => (React.createElement(semantic_ui_react_1.Menu, { fixed: "
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(/*! react */ "react");
 const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "./node_modules/semantic-ui-react/dist/es/index.js");
-const Search_1 = __webpack_require__(/*! ./GitSearch/Search */ "./src/components/GitSearch/Search.tsx");
-exports.GitSearch = () => (React.createElement(semantic_ui_react_1.Container, { text: true, style: { marginTop: "7em" } },
-    React.createElement(semantic_ui_react_1.Header, { as: "h1" }, "This is a GitHub Search Bar"),
-    React.createElement("p", null, "Go ahead and find some interesting repos"),
-    React.createElement(Search_1.default, null),
-    React.createElement("p", null, "Hopefully, office friendly...")));
+const Repositories_1 = __webpack_require__(/*! ./GitSearch/Repositories */ "./src/components/GitSearch/Repositories.tsx");
+const SearchBar_1 = __webpack_require__(/*! ./GitSearch/SearchBar */ "./src/components/GitSearch/SearchBar.tsx");
+class GitSearch extends React.Component {
+    constructor(props) {
+        super(props);
+        this.getRepositories = this.getRepositories.bind(this);
+        this.state = {
+            numberFound: 0,
+            repositories: "[]"
+        };
+    }
+    getRepositories(repos) {
+        this.setState({
+            numberFound: repos.numberFound,
+            repositories: "repos.repositories"
+        });
+        console.log("State: ");
+        console.dir(this.state);
+    }
+    render() {
+        return (React.createElement(semantic_ui_react_1.Container, { text: true, style: { marginTop: "7em" } },
+            React.createElement(semantic_ui_react_1.Header, { as: "h1" }, "This is a GitHub Search Bar"),
+            React.createElement("p", null, "Go ahead and find some interesting repos"),
+            React.createElement(SearchBar_1.SearchBar, { onRepoFetch: this.getRepositories }),
+            this.state.numberFound === 0
+                ? React.createElement("p", null, "Hopefully, office friendly ones...")
+                : React.createElement(Repositories_1.Repositories, { numberFound: this.state.numberFound, repositories: this.state.repositories })));
+    }
+}
+exports.GitSearch = GitSearch;
 
 
 /***/ }),
 
-/***/ "./src/components/GitSearch/Search.tsx":
-/*!*********************************************!*\
-  !*** ./src/components/GitSearch/Search.tsx ***!
-  \*********************************************/
+/***/ "./src/components/GitSearch/Repositories.tsx":
+/*!***************************************************!*\
+  !*** ./src/components/GitSearch/Repositories.tsx ***!
+  \***************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -45717,21 +45740,81 @@ exports.GitSearch = () => (React.createElement(semantic_ui_react_1.Container, { 
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(/*! react */ "react");
+class Repositories extends React.Component {
+    render() {
+        return (React.createElement("div", null,
+            React.createElement("p", null, this.props.numberFound),
+            React.createElement("p", null, this.props.repositories)));
+    }
+}
+exports.Repositories = Repositories;
+
+
+/***/ }),
+
+/***/ "./src/components/GitSearch/SearchBar.tsx":
+/*!************************************************!*\
+  !*** ./src/components/GitSearch/SearchBar.tsx ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(/*! react */ "react");
 class SearchBar extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { value: "" };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.state = {
+            value: ""
+        };
     }
     handleChange(event) {
         this.setState({ value: event.target.value });
         console.log({ value: event.target.value });
     }
     handleSubmit(event) {
-        console.log("Searching for repo: " + this.state.value);
-        event.preventDefault();
-        this.setState({ value: "" });
+        return __awaiter(this, void 0, void 0, function* () {
+            event.preventDefault();
+            console.log("Searching for repos: " + this.state.value);
+            const repos = yield this.fetchGitRepository();
+            this.props.onRepoFetch(repos);
+            this.setState({ value: "" });
+        });
+    }
+    fetchGitRepository() {
+        const foundrepositories = fetch(`https://api.github.com/search/repositories?q=${this.state.value}`)
+            .then((response) => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error("Network response was not ok");
+        })
+            .then((json) => {
+            if (json.total_count === 0) {
+                console.log("Found no repositories");
+            }
+            else {
+                const foundRepoInfo = {
+                    numberFound: json.total_count,
+                    repositories: json.items
+                };
+                console.dir(foundRepoInfo);
+                return foundRepoInfo;
+            }
+        });
+        return foundrepositories;
     }
     render() {
         return (React.createElement("form", { onSubmit: this.handleSubmit },
@@ -45741,7 +45824,7 @@ class SearchBar extends React.Component {
             React.createElement("input", { type: "submit", value: "Submit" })));
     }
 }
-exports.default = SearchBar;
+exports.SearchBar = SearchBar;
 
 
 /***/ }),
