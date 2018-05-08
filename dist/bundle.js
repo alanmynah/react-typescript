@@ -45703,13 +45703,13 @@ class GitSearch extends React.Component {
         this.getRepositories = this.getRepositories.bind(this);
         this.state = {
             numberFound: 0,
-            repositories: "[]"
+            repositories: []
         };
     }
     getRepositories(repos) {
         this.setState({
             numberFound: repos.numberFound,
-            repositories: "repos.repositories"
+            repositories: repos.repositories
         });
         console.log("State: ");
         console.dir(this.state);
@@ -45742,9 +45742,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(/*! react */ "react");
 class Repositories extends React.Component {
     render() {
+        const repos = this.props.repositories.map(((r) => React.createElement("li", { key: r.id }, r.full_name)));
         return (React.createElement("div", null,
             React.createElement("p", null, this.props.numberFound),
-            React.createElement("p", null, this.props.repositories)));
+            repos));
     }
 }
 exports.Repositories = Repositories;

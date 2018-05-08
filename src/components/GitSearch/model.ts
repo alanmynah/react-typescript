@@ -1,4 +1,4 @@
 export interface FoundRepositories {
     numberFound: number;
-    repositories: string;
+    repositories: any[];
 }

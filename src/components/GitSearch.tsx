@@ -12,14 +12,14 @@ export class GitSearch extends React.Component<{}, GitSearchState> {
     this.getRepositories = this.getRepositories.bind(this);
     this.state = {
       numberFound: 0,
-      repositories: "[]"
+      repositories: []
     };
   }
 
   public getRepositories(repos: FoundRepositories) {
     this.setState({
       numberFound: repos.numberFound,
-      repositories: "repos.repositories"
+      repositories: repos.repositories
     });
     console.log("State: ");
     console.dir(this.state);
