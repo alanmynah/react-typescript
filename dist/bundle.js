@@ -45675,7 +45675,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(/*! react */ "react");
 const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "./node_modules/semantic-ui-react/dist/es/index.js");
 exports.Footer = () => (React.createElement(semantic_ui_react_1.Menu, { fixed: "bottom", inverted: true },
-    React.createElement(semantic_ui_react_1.Segment, { inverted: true, vertical: true, style: { margin: "2em 0em 0em", padding: "1em 0em" } },
+    React.createElement(semantic_ui_react_1.Segment, { inverted: true, vertical: true, style: { margin: "20px 0em 0em", padding: "20px" } },
         React.createElement(semantic_ui_react_1.Container, { textAlign: "center" },
             React.createElement(semantic_ui_react_1.List, { horizontal: true, inverted: true, divided: true, link: true },
                 React.createElement(semantic_ui_react_1.List.Item, { as: "a", href: "https://github.com/alanmynah/react-typescript" }, "GitHub"))))));
@@ -45702,26 +45702,35 @@ class GitSearch extends React.Component {
         super(props);
         this.getRepositories = this.getRepositories.bind(this);
         this.state = {
-            numberFound: 0,
-            repositories: []
+            foundRepositories: {
+                numberFound: 0,
+                repositories: []
+            },
+            isLoading: true,
+            error: ""
         };
     }
-    getRepositories(repos) {
+    getRepositories(repos, searchState) {
         this.setState({
-            numberFound: repos.numberFound,
-            repositories: repos.repositories
+            foundRepositories: {
+                numberFound: repos.numberFound,
+                repositories: repos.repositories
+            },
+            isLoading: searchState.isLoading,
+            error: searchState.error
         });
-        console.log("State: ");
-        console.dir(this.state);
     }
     render() {
         return (React.createElement(semantic_ui_react_1.Container, { text: true, style: { marginTop: "7em" } },
             React.createElement(semantic_ui_react_1.Header, { as: "h1" }, "This is a GitHub Search Bar"),
             React.createElement("p", null, "Go ahead and find some interesting repos"),
             React.createElement(SearchBar_1.SearchBar, { onRepoFetch: this.getRepositories }),
-            this.state.numberFound === 0
+            React.createElement("br", null),
+            this.state.foundRepositories.numberFound === 0 && this.state.error === ""
                 ? React.createElement("p", null, "Hopefully, office friendly ones...")
-                : React.createElement(Repositories_1.Repositories, { numberFound: this.state.numberFound, repositories: this.state.repositories })));
+                : this.state.foundRepositories.numberFound === 0 && this.state.error === "No repositories found"
+                    ? React.createElement("p", null, "Sorry, we couldn't find anything")
+                    : React.createElement(Repositories_1.Repositories, { numberFound: this.state.foundRepositories.numberFound, repositories: this.state.foundRepositories.repositories })));
     }
 }
 exports.GitSearch = GitSearch;
@@ -45740,15 +45749,16 @@ exports.GitSearch = GitSearch;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(/*! react */ "react");
-class Repositories extends React.Component {
-    render() {
-        const repos = this.props.repositories.map(((r) => React.createElement("li", { key: r.id }, r.full_name)));
-        return (React.createElement("div", null,
-            React.createElement("p", null, this.props.numberFound),
-            repos));
-    }
-}
-exports.Repositories = Repositories;
+const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "./node_modules/semantic-ui-react/dist/es/index.js");
+exports.Repositories = (props) => {
+    return (React.createElement("div", null,
+        React.createElement("p", null,
+            "There are ",
+            props.numberFound,
+            " repositories matching your search"),
+        React.createElement("p", null, "Here are the first 30: "),
+        props.repositories.map(((r) => React.createElement(semantic_ui_react_1.Card, { key: r.id, header: r.full_name, description: r.description, meta: r.language, href: r.html_url })))));
+};
 
 
 /***/ }),
@@ -45778,44 +45788,47 @@ class SearchBar extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.state = {
-            value: ""
+            value: "",
+            isLoading: true,
+            error: ""
         };
     }
     handleChange(event) {
         this.setState({ value: event.target.value });
-        console.log({ value: event.target.value });
     }
     handleSubmit(event) {
         return __awaiter(this, void 0, void 0, function* () {
             event.preventDefault();
-            console.log("Searching for repos: " + this.state.value);
             const repos = yield this.fetchGitRepository();
-            this.props.onRepoFetch(repos);
-            this.setState({ value: "" });
+            this.props.onRepoFetch(repos, this.state);
+            this.setState({ value: "", isLoading: false });
         });
     }
     fetchGitRepository() {
-        const foundrepositories = fetch(`https://api.github.com/search/repositories?q=${this.state.value}`)
+        return fetch(`https://api.github.com/search/repositories?q=${this.state.value}`)
             .then((response) => {
             if (response.ok) {
                 return response.json();
             }
-            throw new Error("Network response was not ok");
+            if (response.status === 404) {
+                this.setState({ error: "404" });
+            }
+            if (response.status === 403) {
+                this.setState({ error: "403" });
+            }
         })
             .then((json) => {
+            const foundRepoInfo = {
+                numberFound: json.total_count,
+                repositories: json.items
+            };
             if (json.total_count === 0) {
-                console.log("Found no repositories");
+                this.setState({
+                    error: "No repositories found"
+                });
             }
-            else {
-                const foundRepoInfo = {
-                    numberFound: json.total_count,
-                    repositories: json.items
-                };
-                console.dir(foundRepoInfo);
-                return foundRepoInfo;
-            }
+            return foundRepoInfo;
         });
-        return foundrepositories;
     }
     render() {
         return (React.createElement("form", { onSubmit: this.handleSubmit },

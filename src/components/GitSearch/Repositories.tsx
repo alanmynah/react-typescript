@@ -1,18 +1,21 @@
 import * as React from "react";
-import { List, Search } from "semantic-ui-react";
+import { Card, List, Search } from "semantic-ui-react";
 import { FoundRepositories } from "./model";
 
 type RepositoriesProps = FoundRepositories;
 
-export class Repositories extends React.Component<RepositoriesProps> {
-
-    public render() {
-        const repos = this.props.repositories.map(((r) => <li key={r.id}>{r.full_name}</li>));
-        return (
-            <div>
-                <p>{this.props.numberFound}</p>
-                {repos}
-            </div>
-        );
-    }
-}
+export const Repositories: React.SFC<RepositoriesProps> = (props) => {
+    return (
+        <div>
+            <p>There are {props.numberFound} repositories matching your search</p>
+            <p>Here are the first 30: </p>
+            {props.repositories.map(((r: any) => <Card
+                key={r.id}
+                header={r.full_name}
+                description={r.description}
+                meta={r.language}
+                href={r.html_url}
+                />))}
+        </div>
+    );
+};
