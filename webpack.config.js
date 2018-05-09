@@ -1,6 +1,6 @@
 module.exports = {
     mode: "development",
-    entry: "./src/index.tsx",
+    entry: ["./src/index.tsx", "./src/style/index.scss"],
     output: {
         filename: "bundle.js",
         path: __dirname + "/dist"
@@ -20,8 +20,23 @@ module.exports = {
             { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
 
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-            { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
-        ]
+            { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
+            {
+                test: /\.scss$/,
+                use: [{
+                    loader: "style-loader"
+                },
+                {
+                    loader: "css-loader"
+                },
+                {
+                    loader: "sass-loader",
+                    options: {
+                        includePaths: ["./src/style/"]
+                    }
+                }]
+            }
+        ],
     },
 
     // When importing a module whose path matches one of the following, just
