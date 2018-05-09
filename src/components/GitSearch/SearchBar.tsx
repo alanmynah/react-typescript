@@ -41,13 +41,16 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
                 if (response.ok) {
                     return response.json();
                 }
-                if (response.status === 404) {
-                    this.setState({error: "404"});
-                }
-                if (response.status === 403) {
-                    this.setState({error: "403"});
-                }
             })
+            // doesn't work - need to figure out why
+            // .catch((err) => {
+            //     if (err.status === 404) {
+            //         this.setState({error: "404"});
+            //     }
+            //     if (err.status === 403) {
+            //         this.setState({error: "403"});
+            //     }
+            // })
             .then((json) => {
                 const foundRepoInfo: FoundRepositories = {
                     numberFound: json.total_count,
