@@ -35,6 +35,7 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
     private async debouncedEvent(searchValue: string) {
         const repos = await this.fetchGitRepository(searchValue);
         this.props.onRepoFetch(repos, this.state);
+        this.setState({value: ""});
     }
 
     public async fetchGitRepository(value: string): Promise<FoundRepositories> {
