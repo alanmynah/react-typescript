@@ -1,3 +1,4 @@
+import * as lodash from "lodash";
 import * as React from "react";
 import { List, Search } from "semantic-ui-react";
 import { FoundRepositories } from "./model";
@@ -24,19 +25,24 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
         };
       }
 
-    public handleChange(event: any) {
+    public async handleChange(event: any) {
         this.setState({value: event.target.value});
+        console.log(event.target.value);
+        console.log(this.state.value);
+        const repos = await this.fetchGitRepository(event.target.value);
+        console.dir(repos);
+        console.log({value: event.target.value});
       }
 
     public async handleSubmit(event: any) {
         event.preventDefault();
-        const repos = await this.fetchGitRepository();
+        const repos = await this.fetchGitRepository("");
         this.props.onRepoFetch(repos, this.state);
         this.setState({value: "", isLoading: false});
     }
 
-    public fetchGitRepository(): Promise<FoundRepositories> {
-        return fetch(`https://api.github.com/search/repositories?q=${this.state.value}`)
+    public fetchGitRepository(value: string): Promise<FoundRepositories> {
+        return fetch(`https://api.github.com/search/repositories?q=${value}`)
             .then((response) => {
                 if (response.ok) {
                     return response.json();
@@ -67,13 +73,16 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
 
     public render() {
         return (
-            <form onSubmit={this.handleSubmit}>
-                <label>
-                    Search:
-                    <input type="text" value={this.state.value} onChange={this.handleChange} />
-                </label>
-                <input type="submit" value="Submit" />
-            </form>
+            <Search
+                onSearchChange={lodash.debounce(this.handleChange, 100000, {leading: true})}
+            />
+            // <form onSubmit={this.handleSubmit}>
+            //     <label>
+            //         Search:
+            //         <input type="text" value={this.state.value} onChange={this.handleChange} />
+            //     </label>
+            //     <input type="submit" value="Submit" />
+            // </form>
         );
     }
 }
