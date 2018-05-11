@@ -19,6 +19,7 @@ export interface Item {
 }
 
 export interface Result {
+    key: number;
     title: string;
     description: string;
     image: string;

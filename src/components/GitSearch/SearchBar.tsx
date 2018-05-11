@@ -9,7 +9,11 @@ export interface SearchBarState {
     error: string;
 }
 
-export class SearchBar extends React.Component<{}, SearchBarState> {
+interface SearchBarProps {
+    onRepoFetch: any;
+}
+
+export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
 
     constructor(props: any) {
         super(props);
@@ -29,18 +33,19 @@ export class SearchBar extends React.Component<{}, SearchBarState> {
     }
 
     private async debouncedEvent(searchValue: string) {
-        if (searchValue === "") {
-            return;
-        }
         const repos = await this.fetchGitRepository(searchValue);
-        const results: Result[] = repos.items.map((i) => ({
-            title: i.name,
-            description: i.language,
-            image: i.owner.avatar_url
-        }));
-        this.setState({
-            results
-        });
+        this.props.onRepoFetch(repos, this.state);
+        if (repos.items !== []) {
+            const results: Result[] = repos.items.map((i) => ({
+                key: i.id,
+                title: i.name,
+                description: i.language,
+                image: i.owner.avatar_url
+            }));
+            this.setState({
+                results
+            });
+        }
     }
 
     public async fetchGitRepository(value: string): Promise<GitRepositoryResponse> {
@@ -50,6 +55,16 @@ export class SearchBar extends React.Component<{}, SearchBarState> {
         }
         if (response.ok) {
             const receivedRepositories: GitRepositoryResponse = await response.json();
+            if (receivedRepositories.total_count === 0) {
+                this.setState({
+                    error: "No repositories found"
+                });
+                const noRepoInfo: GitRepositoryResponse = {
+                    total_count: 0,
+                    items: null
+                };
+                return noRepoInfo;
+            }
             const foundRepoInfo: GitRepositoryResponse = {
                 total_count: receivedRepositories.total_count,
                 items: receivedRepositories.items.map((i) => ({
@@ -67,11 +82,6 @@ export class SearchBar extends React.Component<{}, SearchBarState> {
                         watchers: i.watchers,
                 }))
             };
-            if (receivedRepositories.total_count === 0) {
-                this.setState({
-                    error: "No repositories found"
-                });
-            }
             return foundRepoInfo;
         }
     }
@@ -83,13 +93,6 @@ export class SearchBar extends React.Component<{}, SearchBarState> {
                 value={this.state.value}
                 results={this.state.results}
             />
-            // <form onSubmit={this.handleSubmit}>
-            //     <label>
-            //         Search:
-            //         <input type="text" value={this.state.value} onChange={this.handleChange} />
-            //     </label>
-            //     <input type="submit" value="Submit" />
-            // </form>
         );
     }
 }

@@ -4,34 +4,31 @@ import { GitRepositoryResponse } from "./GitSearch/model";
 import { SearchBar, SearchBarState } from "./GitSearch/SearchBar";
 
 interface GitSearchState {
-  foundRepositories: GitRepositoryResponse;
   error: string;
 }
 
 export class GitSearch extends React.Component<{}, GitSearchState> {
   constructor(props: any) {
     super(props);
+    this.getRepositories = this.getRepositories.bind(this);
     this.state = {
-      foundRepositories: {
-        total_count: 0,
-        items: []
-      },
       error: ""
     };
+  }
+
+  public getRepositories(repos: GitRepositoryResponse, searchState: SearchBarState) {
+    this.setState({
+      error: searchState.error
+    });
+    console.log(this.state.error);
   }
 
   public render() {
     return (
       <Container text style={{ marginTop: "7em" }}>
         <Header as="h1">This is a GitHub Search Bar</Header>
-        <p>Go ahead and find some interesting repos</p>
-        <SearchBar />
-        <br/>
-        {
-        this.state.foundRepositories.total_count === 0
-          ? this.handleErrors(this.state.error)
-          : <p>All went well, I think</p>
-        }
+        <p>{ this.handleErrors(this.state.error) }</p>
+        <SearchBar onRepoFetch={this.getRepositories}/>
       </Container>
     );
   }
@@ -39,13 +36,13 @@ export class GitSearch extends React.Component<{}, GitSearchState> {
   private handleErrors(error: string) {
     switch (error) {
       case "No repositories found":
-        return <p>Sorry, we couldn't find anything</p>;
+        return "Sorry, we couldn't find anything";
       case "403":
-        return <p>Whoah, ease off the gas a bit - too many requests</p>;
+        return "Whoah, ease off the gas a bit - too many requests";
       case "404":
-        return <p>Think something went oops... Try again later.</p>;
+        return "Think something went oops... Try again later.";
       default:
-        return<p>Just some default</p>;
+        return "Let's find something";
     }
   }
 }
