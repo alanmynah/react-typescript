@@ -11,7 +11,6 @@ interface GitSearchState {
 export class GitSearch extends React.Component<{}, GitSearchState> {
   constructor(props: any) {
     super(props);
-    this.getRepositories = this.getRepositories.bind(this);
     this.state = {
       foundRepositories: {
         total_count: 0,
@@ -21,22 +20,12 @@ export class GitSearch extends React.Component<{}, GitSearchState> {
     };
   }
 
-  public getRepositories(repos: GitRepositoryResponse, searchState: SearchBarState) {
-    this.setState({
-      foundRepositories: {
-        total_count: repos.total_count,
-        items: repos.items
-      },
-      error: searchState.error
-    });
-  }
-
   public render() {
     return (
       <Container text style={{ marginTop: "7em" }}>
         <Header as="h1">This is a GitHub Search Bar</Header>
         <p>Go ahead and find some interesting repos</p>
-        <SearchBar onRepoFetch={this.getRepositories}/>
+        <SearchBar />
         <br/>
         {
         this.state.foundRepositories.total_count === 0

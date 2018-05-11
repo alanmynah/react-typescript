@@ -9,16 +9,12 @@ export interface SearchBarState {
     error: string;
 }
 
-interface SearchBarProps {
-    onRepoFetch: any;
-}
-
-export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
+export class SearchBar extends React.Component<{}, SearchBarState> {
 
     constructor(props: any) {
         super(props);
         this.handleChange = this.handleChange.bind(this);
-        this.debouncedEvent = debounce(this.debouncedEvent, 1000);
+        this.debouncedEvent = debounce(this.debouncedEvent, 500);
         this.state = {
             value: "",
             results: [],
@@ -33,15 +29,16 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
     }
 
     private async debouncedEvent(searchValue: string) {
+        if (searchValue === "") {
+            return;
+        }
         const repos = await this.fetchGitRepository(searchValue);
-        // this.props.onRepoFetch(repos, this.state);
         const results: Result[] = repos.items.map((i) => ({
             title: i.name,
             description: i.language,
             image: i.owner.avatar_url
         }));
         this.setState({
-            value: "",
             results
         });
     }
