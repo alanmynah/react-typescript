@@ -5,6 +5,7 @@ import { GitRepositoryResponse, Item, Result } from "./model";
 
 export interface SearchBarState {
     value?: string;
+    isLoading: boolean;
     results: Result[];
     error: string;
 }
@@ -22,17 +23,27 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
         this.state = {
             value: "",
             results: [],
-            error: ""
+            error: "",
+            isLoading: false
         };
     }
 
+    public componentWillMount() {
+        this.resetComponent();
+    }
+
+    private resetComponent = () => this.setState({ isLoading: false, results: [], value: "" });
+
     public async handleChange(event: any) {
         const searchValue = event.target.value;
-        this.setState({ value: searchValue });
+        this.setState({ isLoading: true, value: searchValue });
         const repos = await this.debouncedEvent(searchValue);
     }
 
     private async debouncedEvent(searchValue: string) {
+        if (this.state.value.length < 1) {
+            return this.resetComponent();
+        }
         const repos = await this.fetchGitRepository(searchValue);
         this.props.onRepoFetch(repos, this.state);
         if (repos.items !== []) {
@@ -46,18 +57,22 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
                 results
             });
         }
+        this.setState({
+            isLoading: false
+        });
     }
 
     public async fetchGitRepository(value: string): Promise<GitRepositoryResponse> {
         const response = await fetch(`https://api.github.com/search/repositories?q=${value}`);
-        if (response.status === 404 || response.status === 403) {
+        if (response.status !== 200) {
             this.setState({error: `${response.status}`});
         }
         if (response.ok) {
             const receivedRepositories: GitRepositoryResponse = await response.json();
             if (receivedRepositories.total_count === 0) {
                 this.setState({
-                    error: "No repositories found"
+                    error: "No repositories found",
+                    isLoading: false
                 });
                 const noRepoInfo: GitRepositoryResponse = {
                     total_count: 0,
@@ -82,6 +97,7 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
                         watchers: i.watchers,
                 }))
             };
+            this.setState({ error: "" });
             return foundRepoInfo;
         }
     }
@@ -89,6 +105,7 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
     public render() {
         return (
             <Search
+                loading={this.state.isLoading}
                 onSearchChange={this.handleChange}
                 value={this.state.value}
                 results={this.state.results}

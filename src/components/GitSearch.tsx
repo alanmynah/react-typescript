@@ -20,7 +20,6 @@ export class GitSearch extends React.Component<{}, GitSearchState> {
     this.setState({
       error: searchState.error
     });
-    console.log(this.state.error);
   }
 
   public render() {
