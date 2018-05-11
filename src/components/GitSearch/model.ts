@@ -1,9 +1,25 @@
-export interface FoundRepositories {
-    numberFound: number;
-    repositories: any[];
-}
-
 export interface GitRepositoryResponse {
     total_count: number;
-    items: any[];
+    items?: Item[];
+}
+
+export interface Item {
+    id: number;
+    name: string;
+    owner: {
+        login: string;
+        avatar_url: string;
+        html_url: string;
+    };
+    html_url: string;
+    open_issues: number;
+    language: string;
+    description: string;
+    watchers: number;
+}
+
+export interface Result {
+    title: string;
+    description: string;
+    image: string;
 }

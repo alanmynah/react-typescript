@@ -1,12 +1,10 @@
 import * as React from "react";
 import { Container, Header, List } from "semantic-ui-react";
-import { FoundRepositories } from "./GitSearch/model";
-import { Repositories } from "./GitSearch/Repositories";
+import { GitRepositoryResponse } from "./GitSearch/model";
 import { SearchBar, SearchBarState } from "./GitSearch/SearchBar";
 
 interface GitSearchState {
-  foundRepositories: FoundRepositories;
-  isLoading: boolean;
+  foundRepositories: GitRepositoryResponse;
   error: string;
 }
 
@@ -16,21 +14,19 @@ export class GitSearch extends React.Component<{}, GitSearchState> {
     this.getRepositories = this.getRepositories.bind(this);
     this.state = {
       foundRepositories: {
-        numberFound: 0,
-        repositories: []
+        total_count: 0,
+        items: []
       },
-      isLoading: true,
       error: ""
     };
   }
 
-  public getRepositories(repos: FoundRepositories, searchState: SearchBarState) {
+  public getRepositories(repos: GitRepositoryResponse, searchState: SearchBarState) {
     this.setState({
       foundRepositories: {
-        numberFound: repos.numberFound,
-        repositories: repos.repositories
+        total_count: repos.total_count,
+        items: repos.items
       },
-      isLoading: searchState.isLoading,
       error: searchState.error
     });
   }
@@ -43,12 +39,9 @@ export class GitSearch extends React.Component<{}, GitSearchState> {
         <SearchBar onRepoFetch={this.getRepositories}/>
         <br/>
         {
-          this.state.foundRepositories.numberFound === 0
+        this.state.foundRepositories.total_count === 0
           ? this.handleErrors(this.state.error)
-          : <Repositories
-              numberFound={this.state.foundRepositories.numberFound}
-              repositories={this.state.foundRepositories.repositories}
-          />
+          : <p>All went well, I think</p>
         }
       </Container>
     );
