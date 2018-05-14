@@ -19,8 +19,8 @@ export class GitSearch extends React.Component<{}, GitSearchState> {
   }
 
   public getRepository(RepositoryKey: number, state: SearchBarState) {
-    console.log(RepositoryKey);
-    console.dir(state.repos.find((o) => o.id === RepositoryKey));
+    const repositoryToDisplay = state.repos.find((o) => o.id === RepositoryKey);
+    console.log(repositoryToDisplay);
   }
 
   public render() {
