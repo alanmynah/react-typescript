@@ -1,9 +1,9 @@
 export interface GitRepositoryResponse {
     total_count: number;
-    items?: Item[];
+    items?: Repository[];
 }
 
-export interface Item {
+export interface Repository {
     id: number;
     name: string;
     owner: {

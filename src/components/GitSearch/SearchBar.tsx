@@ -1,17 +1,19 @@
 import { debounce } from "lodash";
 import * as React from "react";
 import { List, Search } from "semantic-ui-react";
-import { GitRepositoryResponse, Item, Result } from "./model";
+import { GitRepositoryResponse, Repository, Result } from "./model";
 
 export interface SearchBarState {
+    repoLoaded: boolean;
     value?: string;
     isLoading: boolean;
     results: Result[];
+    repos: Repository[];
     error: string;
 }
 
 interface SearchBarProps {
-    onRepoFetch: any;
+    getSelectedRepositoryKey: any;
 }
 
 export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
@@ -21,8 +23,10 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
         this.handleChange = this.handleChange.bind(this);
         this.debouncedEvent = debounce(this.debouncedEvent, 500);
         this.state = {
+            repoLoaded: false,
             value: "",
             results: [],
+            repos: [],
             error: "",
             isLoading: false
         };
@@ -45,18 +49,19 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
             return this.resetComponent();
         }
         const repos = await this.fetchGitRepository(searchValue);
-        this.props.onRepoFetch(repos, this.state);
         if (repos.total_count !== 0) {
-            const results: Result[] = repos.items.map((i) => ({
+            const results: Result[] = repos.items.map((i: Repository) => ({
                 key: i.id,
                 title: i.name,
                 description: i.language,
                 image: i.owner.avatar_url
             }));
             this.setState({
-                results
+                results,
+                repos: repos.items
             });
         }
+        this.props.getSelectedRepositoryKey(repos, this.state);
         this.setState({
             isLoading: false
         });
@@ -82,7 +87,7 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
             }
             const foundRepoInfo: GitRepositoryResponse = {
                 total_count: receivedRepositories.total_count,
-                items: receivedRepositories.items.map((i) => ({
+                items: receivedRepositories.items.map((i: Repository) => ({
                         id: i.id,
                         name: i.name,
                         owner: {
@@ -102,11 +107,16 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
         }
     }
 
+    public handleResultSelect = (event: any, data: any) => {
+        this.props.getSelectedRepositoryKey(data.result.key, this.state);
+    }
+
     public render() {
         return (
             <Search
                 loading={this.state.isLoading}
                 onSearchChange={this.handleChange}
+                onResultSelect={this.handleResultSelect}
                 value={this.state.value}
                 results={this.state.results}
             />
