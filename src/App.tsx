@@ -11,6 +11,7 @@ export class App extends React.Component {
             <div>
                 <Header />
                 <GitSearch />
+                <div className="box"></div>
                 <Footer />
             </div>);
     }

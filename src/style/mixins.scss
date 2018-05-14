@@ -1,0 +1,10 @@
+@mixin vendor-prefix($name, $value) {
+    @each $vendor in ('-webkit-', '-moz-', '-ms-', '-o-', '') {
+        #{$vendor}#{$name}: #{$value};
+    }
+}
+
+@mixin box-shadow($x, $y, $blur, $c){
+    $values: $x $y $blur $c;
+    @include vendor-prefix("box-shadow", $values);
+}
