@@ -48,7 +48,7 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
             return this.resetComponent();
         }
         const repos = await this.fetchGitRepository(searchValue);
-        if (repos.total_count !== 0) {
+        if (repos && repos.total_count !== 0) {
             const results: Result[] = repos.items.map((i) => ({
                 key: i.id,
                 title: i.name,

@@ -29,6 +29,9 @@ export class GitSearch extends React.Component<{}, GitSearchState> {
         repository: repositoryToDisplay
     });
     }
+    this.setState ({
+      error: state.error
+    });
   }
 
   public render() {
