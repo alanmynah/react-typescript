@@ -1,11 +1,13 @@
 import * as React from "react";
-import { Container, Header, List } from "semantic-ui-react";
+import { Card, Container, Header, List } from "semantic-ui-react";
 import { Repository } from "./GitSearch/model";
 import { SearchBar, SearchBarState } from "./GitSearch/SearchBar";
+import { StatsPage } from "./Stats/StatsPage";
 
 interface GitSearchState {
   repoLoaded: boolean;
-  error: string;
+  repository: Repository;
+  error?: string;
 }
 
 export class GitSearch extends React.Component<{}, GitSearchState> {
@@ -14,13 +16,19 @@ export class GitSearch extends React.Component<{}, GitSearchState> {
     this.getRepository = this.getRepository.bind(this);
     this.state = {
       repoLoaded: false,
+      repository: undefined,
       error: ""
     };
   }
 
   public getRepository(RepositoryKey: number, state: SearchBarState) {
     const repositoryToDisplay = state.repos.find((o) => o.id === RepositoryKey);
-    console.log(repositoryToDisplay);
+    if (repositoryToDisplay !== undefined) {
+      this.setState ({
+        repoLoaded: true,
+        repository: repositoryToDisplay
+    });
+    }
   }
 
   public render() {
@@ -29,6 +37,9 @@ export class GitSearch extends React.Component<{}, GitSearchState> {
         <Header as="h1">This is a GitHub Search Bar</Header>
         <p>{ this.handleErrors(this.state.error) }</p>
         <SearchBar getSelectedRepositoryKey={this.getRepository}/>
+        {this.state.repoLoaded
+          ? <StatsPage repository={this.state.repository}/>
+          : null}
       </Container>
     );
   }
@@ -42,7 +53,7 @@ export class GitSearch extends React.Component<{}, GitSearchState> {
       case "404":
         return "Think something went oops... Try again later.";
       default:
-        return "Let's find something";
+        return "";
     }
   }
 }

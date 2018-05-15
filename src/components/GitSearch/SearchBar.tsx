@@ -17,7 +17,6 @@ interface SearchBarProps {
 }
 
 export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
-
     constructor(props: any) {
         super(props);
         this.handleChange = this.handleChange.bind(this);
@@ -109,6 +108,9 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
 
     public handleResultSelect = (event: any, data: any) => {
         this.props.getSelectedRepositoryKey(data.result.key, this.state);
+        this.setState ({
+            value: ""
+        });
     }
 
     public render() {
