@@ -37,6 +37,7 @@ export class GitSearch extends React.Component<{}, GitSearchState> {
         <Header as="h1">This is a GitHub Search Bar</Header>
         <p>{ this.handleErrors(this.state.error) }</p>
         <SearchBar getSelectedRepositoryKey={this.getRepository}/>
+        <br />
         {this.state.repoLoaded
           ? <StatsPage repository={this.state.repository}/>
           : null}
