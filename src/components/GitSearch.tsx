@@ -4,6 +4,10 @@ import { Repository } from "./GitSearch/model";
 import { SearchBar, SearchBarState } from "./GitSearch/SearchBar";
 import { StatsPage } from "./Stats/StatsPage";
 
+// TODO: -overall things left to do, read below
+// - [] tests - error codes
+// - [] minifying
+
 interface GitSearchState {
   repoLoaded: boolean;
   repository: Repository;
