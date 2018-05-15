@@ -24,7 +24,12 @@ export const StatsPage: React.SFC<StatsPageProps> = (props) => (
                     <Statistic.Group>
                         <Statistic>
                             <Statistic.Value>{props.repository.watchers}</Statistic.Value>
-                            <Statistic.Label>Watchers</Statistic.Label>
+                            <Statistic.Label>
+                                {props.repository.watchers === 1
+                                    ? "Watcher"
+                                    : "Watchers"
+                                }
+                            </Statistic.Label>
                         </Statistic>
                         <Statistic>
                             <Statistic.Value>{props.repository.open_issues}</Statistic.Value>
