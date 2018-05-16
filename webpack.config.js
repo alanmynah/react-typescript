@@ -4,7 +4,7 @@ const extractSass = new ExtractTextPlugin("style.css");
 
 module.exports = {
     mode: "development",
-    entry: ["./src/index.tsx", "./src/style/index.scss"],
+    entry: ["./src/index.tsx"],
     output: {
         filename: "bundle.js",
         path: __dirname + "/dist"
@@ -15,7 +15,7 @@ module.exports = {
 
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
-        extensions: [".ts", ".tsx", ".js", ".json"]
+        extensions: [".ts", ".tsx", ".js", ".json", ".scss", ".css"]
     },
 
     module: {
