@@ -78,6 +78,7 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
                     error: "No repositories found",
                     isLoading: false
                 });
+                // TODO: refactor
                 const noRepoInfo: GitRepositoryResponse = {
                     total_count: 0,
                     items: null

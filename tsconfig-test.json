@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "outDir": "./test_build/",
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "module": "commonjs",
+        "lib": ["es2015", "dom"],
+        "target": "es5",
+        "jsx": "react",
+        "experimentalDecorators": true
+    },
+    "include": [
+        "./test/**/*"
+    ]
+}
