@@ -1,8 +1,8 @@
 import * as React from "react";
 import { Card, Container, Header, List } from "semantic-ui-react";
-import { Repository } from "./GitSearch/model";
-import { SearchBar, SearchBarState } from "./GitSearch/SearchBar";
-import { StatsPage } from "./Stats/StatsPage";
+import { StatsPage } from "../Stats/StatsPage";
+import { Repository } from "./model";
+import { SearchBar, SearchBarState } from "./SearchBar";
 
 // TODO: -overall things left to do, read below
 // - [] tests - error codes
