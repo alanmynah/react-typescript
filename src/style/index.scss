@@ -5,10 +5,7 @@
   }
 
 body {
-    .box {
-        width: 150px;
-        height: 150px;
-        background-color: green;
+    .searchResults {
         @include box-shadow(20px, 20px, 40px, #ef1234);
     }
     p {
