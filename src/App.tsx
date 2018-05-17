@@ -12,7 +12,7 @@ export class App extends React.Component {
             <div>
                 <Header />
                 <GitSearch />
-                <Camera />
+                <Camera width={320} height={280}/>
                 <Footer />
             </div>);
     }
