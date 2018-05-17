@@ -1,4 +1,5 @@
 @import "./mixins.scss";
+@import "./camera.scss";
 
 * {
     @include vendor-prefix("box-sizing", "border-box");
