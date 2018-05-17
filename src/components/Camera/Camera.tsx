@@ -5,6 +5,7 @@ import { Button } from "semantic-ui-react";
 interface CameraState {
     width: number;
     height: number;
+    stream: MediaStream;
 }
 
 export class Camera extends React.Component<{}, CameraState> {
@@ -20,15 +21,23 @@ export class Camera extends React.Component<{}, CameraState> {
         this.state = {
             width: 320,
             height: 240,
+            stream: undefined
         };
     }
 
     public async componentDidMount() {
-        this.video.srcObject = await navigator.mediaDevices.getUserMedia({
-            video: {width: this.state.width, height: this.state.height},
-            audio: false
+        this.setState({
+            stream: await navigator.mediaDevices.getUserMedia({
+                video: {width: this.state.width, height: this.state.height},
+                audio: false
+            })
         });
+        this.video.srcObject = this.state.stream;
         this.paintToCanvas(this.video);
+    }
+
+    public async componentWillUnmount() {
+        await this.state.stream.getVideoTracks()[0].stop();
     }
 
     private paintToCanvas(video: HTMLVideoElement) {
@@ -40,7 +49,7 @@ export class Camera extends React.Component<{}, CameraState> {
         }, 16);
     }
 
-    private takePhoto() {
+    private async takePhoto() {
         const photo = this.canvas.toDataURL("image/png");
         this.photo.setAttribute("src", photo);
     }
