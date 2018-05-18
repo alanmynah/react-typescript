@@ -20,10 +20,13 @@ interface CameraState {
 }
 
 export class Camera extends React.Component<CameraProps, CameraState> {
-    private video: HTMLVideoElement;
-    private canvas: HTMLCanvasElement;
-    private photo: HTMLPictureElement;
-    private devices: HTMLDivElement;
+    public video: HTMLVideoElement;
+    public canvas: HTMLCanvasElement;
+    public photo: HTMLPictureElement;
+    public devices: HTMLDivElement;
+
+    public userFacingMode = "user";
+    public environmentFacingMode = "environment";
 
     constructor(props: any) {
         super(props);
@@ -34,29 +37,33 @@ export class Camera extends React.Component<CameraProps, CameraState> {
             width: this.props.width,
             height: this.props.height,
             stream: undefined,
-            facingMode: "user",
+            facingMode: "",
             devices: []
         };
     }
 
-    public async componentDidMount() {
+    public async setStream(mode: string) {
         this.setState({
             stream: await navigator.mediaDevices.getUserMedia({
                 video: {
                     width: this.state.width,
                     height: this.state.height,
-                    facingMode: this.state.facingMode,
+                    facingMode: mode,
                 },
                 audio: false
-            })
+            }),
+            facingMode: mode
         });
         this.video.srcObject = this.state.stream;
+    }
+
+    public async componentDidMount() {
+        this.setStream(this.userFacingMode);
         this.paintToCanvas(this.video);
-        console.dir(this.state.stream);
         this.getDevices();
     }
 
-    private async getDevices() {
+    public async getDevices() {
         const gotDevices = await navigator.mediaDevices.enumerateDevices();
         this.setState({
             devices: gotDevices
@@ -64,10 +71,12 @@ export class Camera extends React.Component<CameraProps, CameraState> {
     }
 
     public async componentWillUnmount() {
-        await this.state.stream.getVideoTracks()[0].stop();
+        await this.state.stream.getVideoTracks()[0].applyConstraints({
+
+        });
     }
 
-    private paintToCanvas(video: HTMLVideoElement) {
+    public paintToCanvas(video: HTMLVideoElement) {
         this.canvas.width = this.state.width;
         this.canvas.height = this.state.height;
         const context = this.canvas.getContext("2d");
@@ -76,32 +85,13 @@ export class Camera extends React.Component<CameraProps, CameraState> {
         }, 16);
     }
 
-    private async flipCamera() {
-        console.dir(this.state);
-        if (this.state.facingMode === "user") {
-            this.setState({
-                stream: await navigator.mediaDevices.getUserMedia({
-                    video: {
-                        facingMode: "environment"
-                    },
-                    audio: false
-                }),
-                facingMode: "envinronment"
-            });
-        } else {
-            this.setState({
-                stream: await navigator.mediaDevices.getUserMedia({
-                    video: {
-                        facingMode: "user"
-                    },
-                    audio: false
-                }),
-                facingMode: "user"
-            });
-        }
+    public async flipCamera() {
+        this.state.facingMode === this.userFacingMode
+            ? this.setStream(this.environmentFacingMode)
+            : this.setStream(this.userFacingMode);
     }
 
-    private async takePhoto() {
+    public async takePhoto() {
         const photo = this.canvas.toDataURL("image/png");
         this.photo.setAttribute("src", photo);
     }
@@ -119,8 +109,8 @@ export class Camera extends React.Component<CameraProps, CameraState> {
                             </Segment>
                         </Grid.Row>
                         <Grid.Row>
-                            <Button className="button" ref="button" onClick={this.takePhoto} icon="camera" />
-                            <Button className="button" ref="button" onClick={this.flipCamera} >Flip Camera</Button>
+                            <Button className="button" onClick={this.takePhoto} icon="camera" />
+                            <Button className="button" onClick={this.flipCamera}>Flip Camera</Button>
                         </Grid.Row>
                     </Grid>
                 </Grid.Column>
