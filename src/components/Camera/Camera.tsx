@@ -18,7 +18,6 @@ export class Camera extends React.Component<CameraProps, CameraState> {
     private video: HTMLVideoElement;
     private canvas: HTMLCanvasElement;
     private photo: HTMLPictureElement;
-    private startButton: HTMLButtonElement;
 
     constructor(props: any) {
         super(props);
