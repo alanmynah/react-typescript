@@ -16,17 +16,15 @@ interface CameraState {
     height: number;
     stream: MediaStream;
     facingMode: string;
-    devices: MediaDeviceInfo[];
 }
 
 export class Camera extends React.Component<CameraProps, CameraState> {
-    public video: HTMLVideoElement;
-    public canvas: HTMLCanvasElement;
-    public photo: HTMLPictureElement;
-    public devices: HTMLDivElement;
+    private video: HTMLVideoElement;
+    private canvas: HTMLCanvasElement;
+    private photo: HTMLPictureElement;
 
-    public userFacingMode = "user";
-    public environmentFacingMode = "environment";
+    private userFacingMode = "user";
+    private environmentFacingMode = "environment";
 
     constructor(props: any) {
         super(props);
@@ -38,11 +36,10 @@ export class Camera extends React.Component<CameraProps, CameraState> {
             height: this.props.height,
             stream: undefined,
             facingMode: "",
-            devices: []
         };
     }
 
-    public async setStream(mode: string) {
+    private async setStream(mode: string) {
         this.setState({
             stream: await navigator.mediaDevices.getUserMedia({
                 video: {
@@ -60,23 +57,9 @@ export class Camera extends React.Component<CameraProps, CameraState> {
     public async componentDidMount() {
         this.setStream(this.userFacingMode);
         this.paintToCanvas(this.video);
-        this.getDevices();
     }
 
-    public async getDevices() {
-        const gotDevices = await navigator.mediaDevices.enumerateDevices();
-        this.setState({
-            devices: gotDevices
-        });
-    }
-
-    public async componentWillUnmount() {
-        await this.state.stream.getVideoTracks()[0].applyConstraints({
-
-        });
-    }
-
-    public paintToCanvas(video: HTMLVideoElement) {
+    private paintToCanvas(video: HTMLVideoElement) {
         this.canvas.width = this.state.width;
         this.canvas.height = this.state.height;
         const context = this.canvas.getContext("2d");
@@ -85,13 +68,13 @@ export class Camera extends React.Component<CameraProps, CameraState> {
         }, 16);
     }
 
-    public async flipCamera() {
+    private async flipCamera() {
         this.state.facingMode === this.userFacingMode
             ? this.setStream(this.environmentFacingMode)
             : this.setStream(this.userFacingMode);
     }
 
-    public async takePhoto() {
+    private async takePhoto() {
         const photo = this.canvas.toDataURL("image/png");
         this.photo.setAttribute("src", photo);
     }
@@ -127,18 +110,6 @@ export class Camera extends React.Component<CameraProps, CameraState> {
                     className="canvas"
                     ref={(input) => { this.canvas = input; }}
                 />
-                <div>
-                    <span>{this.state.facingMode}</span>
-                    {this.state.devices.map((device) => {
-                        return (
-                            <ul>
-                                <li>{device.deviceId}</li>
-                                <li>{device.kind}</li>
-                                <li>{device.groupId}</li>
-                            </ul>
-                        );
-                    })}
-                </div>
             </Grid >
         );
     }
