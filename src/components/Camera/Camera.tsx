@@ -1,10 +1,14 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { Button, Grid, Image, Segment } from "semantic-ui-react";
+import { Button, Grid, Image, List, Segment } from "semantic-ui-react";
 
 interface CameraProps {
     width: number;
     height: number;
+}
+
+interface DeviceProps {
+    devices: MediaDeviceInfo[];
 }
 
 interface CameraState {
@@ -12,12 +16,14 @@ interface CameraState {
     height: number;
     stream: MediaStream;
     facingMode: string;
+    devices: MediaDeviceInfo[];
 }
 
 export class Camera extends React.Component<CameraProps, CameraState> {
     private video: HTMLVideoElement;
     private canvas: HTMLCanvasElement;
     private photo: HTMLPictureElement;
+    private devices: HTMLDivElement;
 
     constructor(props: any) {
         super(props);
@@ -28,7 +34,8 @@ export class Camera extends React.Component<CameraProps, CameraState> {
             width: this.props.width,
             height: this.props.height,
             stream: undefined,
-            facingMode: "user"
+            facingMode: "user",
+            devices: []
         };
     }
 
@@ -38,14 +45,22 @@ export class Camera extends React.Component<CameraProps, CameraState> {
                 video: {
                     width: this.state.width,
                     height: this.state.height,
-                    facingMode: this.state.facingMode
+                    facingMode: this.state.facingMode,
                 },
                 audio: false
             })
         });
         this.video.srcObject = this.state.stream;
         this.paintToCanvas(this.video);
-        console.dir(this.state);
+        console.dir(this.state.stream);
+        this.getDevices();
+    }
+
+    private async getDevices() {
+        const gotDevices = await navigator.mediaDevices.enumerateDevices();
+        this.setState({
+            devices: gotDevices
+        });
     }
 
     public async componentWillUnmount() {
@@ -62,32 +77,28 @@ export class Camera extends React.Component<CameraProps, CameraState> {
     }
 
     private async flipCamera() {
-    //     console.dir(this.state);
-    //     if (this.state.facingMode === "user") {
-    //         this.setState({
-    //             stream: await navigator.mediaDevices.getUserMedia({
-    //                 video: {
-    //                     width: this.state.width,
-    //                     height: this.state.height,
-    //                     facingMode: "envinronment"
-    //                 },
-    //                 audio: false
-    //             }),
-    //             facingMode: "envinronment"
-    //         });
-    //     } else {
-    //         this.setState({
-    //             stream: await navigator.mediaDevices.getUserMedia({
-    //                 video: {
-    //                     width: this.state.width,
-    //                     height: this.state.height,
-    //                     facingMode: "user"
-    //                 },
-    //                 audio: false
-    //             }),
-    //             facingMode: "user"
-    //         });
-    //     }
+        console.dir(this.state);
+        if (this.state.facingMode === "user") {
+            this.setState({
+                stream: await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: "environment"
+                    },
+                    audio: false
+                }),
+                facingMode: "envinronment"
+            });
+        } else {
+            this.setState({
+                stream: await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: "user"
+                    },
+                    audio: false
+                }),
+                facingMode: "user"
+            });
+        }
     }
 
     private async takePhoto() {
@@ -97,7 +108,7 @@ export class Camera extends React.Component<CameraProps, CameraState> {
 
     public render() {
         return (
-            <   Grid container columns={2} stackable className="grid">
+            <Grid container columns={2} stackable className="grid">
                 <Grid.Column>
                     <Grid verticalAlign="middle" columns={1} centered >
                         <Grid.Row>
@@ -126,7 +137,19 @@ export class Camera extends React.Component<CameraProps, CameraState> {
                     className="canvas"
                     ref={(input) => { this.canvas = input; }}
                 />
-            </  Grid >
+                <div>
+                    <span>{this.state.facingMode}</span>
+                    {this.state.devices.map((device) => {
+                        return (
+                            <ul>
+                                <li>{device.deviceId}</li>
+                                <li>{device.kind}</li>
+                                <li>{device.groupId}</li>
+                            </ul>
+                        );
+                    })}
+                </div>
+            </Grid >
         );
     }
 }
