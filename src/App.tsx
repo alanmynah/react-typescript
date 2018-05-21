@@ -1,6 +1,7 @@
 import * as React from "react";
 import {Container} from "semantic-ui-react";
 
+import { Camera } from "./components/Camera/Camera";
 import { GitSearch } from "./components/Search/GitSearch";
 import { Footer } from "./components/Shared/Footer";
 import { Header } from "./components/Shared/Header";
@@ -11,7 +12,7 @@ export class App extends React.Component {
             <div>
                 <Header />
                 <GitSearch />
-                <div className="box"></div>
+                <Camera width={320} height={280}/>
                 <Footer />
             </div>);
     }

@@ -1,8 +1,14 @@
 @import "./mixins.scss";
+@import "./camera.scss";
 
-* {
+*, *:before, *:after {
+    box-sizing: inherit;
     @include vendor-prefix("box-sizing", "border-box");
-  }
+}
+
+html {
+    box-sizing: border-box;
+}
 
 body {
     .box {
