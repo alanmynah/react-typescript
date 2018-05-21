@@ -6,6 +6,7 @@
   "scripts": {
     "build": "webpack",
     "watch": "webpack --watch",
+    "clean": "rimraf ./node_modules/ && rm ./package-lock.json",
     "test": "rimraf ./test_build/ && tsc -p tsconfig-test.json && alsatian \"./test_build/test/**/*.test.js\"",
     "lint": "tslint -c tslint.json 'src/**/*.ts'"
   },
@@ -34,6 +35,7 @@
     "awesome-typescript-loader": "^5.0.0",
     "css-loader": "^0.28.11",
     "extract-text-webpack-plugin": "v4.0.0-alpha.0",
+    "mock-fetch-api": "^1.0.7",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.0.1",
     "source-map-loader": "^0.2.3",
