@@ -1,14 +1,17 @@
 {
   "name": "react-typescript",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Typescript, React, Webpack, Express App from scratch",
+  "main": "server.js",
   "scripts": {
-    "build": "webpack",
+    "build": "npm run build-webpack && node ./dist/server.js",
+    "nodemon": "nodemon ./dist/server.js",
     "watch": "webpack --watch",
-    "clean": "rimraf ./node_modules/ && rm ./package-lock.json",
+    "build-webpack": "webpack",
+    "clean": "rimraf ./node_modules/",
     "test": "rimraf ./test_build/ && tsc -p tsconfig-test.json && alsatian \"./test_build/test/**/*.test.js\"",
-    "lint": "tslint -c tslint.json 'src/**/*.ts'"
+    "test-test": "alsatian \"./test_build/test/**/*.test.js\"",
+    "lint": "tslint -c tslint.json \"src/**/*.ts\""
   },
   "repository": {
     "type": "git",
@@ -21,6 +24,8 @@
   },
   "homepage": "https://github.com/alanmynah/react-typescript#readme",
   "dependencies": {
+    "@types/express": "^4.11.1",
+    "express": "^4.16.3",
     "lodash": "^4.17.10",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
@@ -37,6 +42,7 @@
     "extract-text-webpack-plugin": "v4.0.0-alpha.0",
     "mock-fetch-api": "^1.0.7",
     "node-sass": "^4.9.0",
+    "nodemon": "^1.17.4",
     "sass-loader": "^7.0.1",
     "source-map-loader": "^0.2.3",
     "style-loader": "^0.21.0",
