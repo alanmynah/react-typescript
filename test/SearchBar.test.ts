@@ -1,6 +1,6 @@
 import {AsyncTest, Expect, Test, TestFixture} from "alsatian";
 import { debug } from "util";
-import { SearchBar } from "../src/components/Search/SearchBar";
+import { SearchBar } from "../src/public/components/Search/SearchBar";
 // tslint:disable-next-line:no-var-requires
 const MockFetch = require("mock-fetch-api");
 
