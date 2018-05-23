@@ -1,6 +1,24 @@
+const path = require("path");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CleanWebpackPlugin = require("clean-webpack-plugin");
 
 const extractSass = new ExtractTextPlugin("style.css");
+const htmlPlugin = new HtmlWebpackPlugin({
+    template: "./index.html",
+    inject: false,
+    title: "React-Typescript!",
+    files: {
+        chunks: {
+            head: {
+                css: ["./style.css"]
+            },
+            main: {
+                entry: "./bundle.js"
+            }
+        }
+    }
+});
 
 module.exports = {
     target: "node",
@@ -9,9 +27,13 @@ module.exports = {
         bundle: "./src/public/index.tsx",
         server: "./src/server.ts"
     },
+    plugins: [
+        htmlPlugin,
+        extractSass
+    ],
     output: {
         filename: "[name].js",
-        path: __dirname + "/dist"
+        path: path.resolve(__dirname, "dist")
     },
 
     // Enable sourcemaps for debugging webpack's output.
@@ -38,10 +60,6 @@ module.exports = {
             }
         ],
     },
-
-    plugins: [
-        extractSass
-    ],
 
     externals: {
         "react": "React",
