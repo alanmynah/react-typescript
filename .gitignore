@@ -1,4 +1,5 @@
-/dist/
+/dist/*.css
+/dist/*.js
 /test_build/
 node_modules/
 built/*
