@@ -3,10 +3,14 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const extractSass = new ExtractTextPlugin("style.css");
 
 module.exports = {
+    target: "node",
     mode: "development",
-    entry: ["./src/index.tsx"],
+    entry: {
+        bundle: "./src/public/index.tsx",
+        server: "./src/server.ts"
+    },
     output: {
-        filename: "bundle.js",
+        filename: "[name].js",
         path: __dirname + "/dist"
     },
 
