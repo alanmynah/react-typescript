@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 
 const extractSass = new ExtractTextPlugin("style.css");
+const cleanWebpackPlugin = new CleanWebpackPlugin(["dist"]);
 const htmlPlugin = new HtmlWebpackPlugin({
     template: "./index.html",
     inject: false,
@@ -11,7 +12,7 @@ const htmlPlugin = new HtmlWebpackPlugin({
     files: {
         chunks: {
             head: {
-                css: ["./style.css"]
+                css: "./style.css"
             },
             main: {
                 entry: "./bundle.js"
@@ -28,6 +29,7 @@ module.exports = {
         server: "./src/server.ts"
     },
     plugins: [
+        cleanWebpackPlugin,
         htmlPlugin,
         extractSass
     ],
