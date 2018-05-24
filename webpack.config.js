@@ -13,8 +13,8 @@ const htmlPlugin = new HtmlWebpackPlugin({
     title: "React-Typescript!"
 });
 const uglifyJsPlugin = new UglifyJsPlugin({
-    sourceMap = true
-})
+    sourceMap: true
+});
 
 module.exports = [
 {
