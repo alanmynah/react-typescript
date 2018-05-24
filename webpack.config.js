@@ -3,24 +3,18 @@ const webpack = require("webpack");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const extractSass = new ExtractTextPlugin("style.[chunkhash:6].css");
 const cleanWebpackPlugin = new CleanWebpackPlugin(["dist"]);
 const htmlPlugin = new HtmlWebpackPlugin({
     template: "./index.html",
     inject: true,
-    title: "React-Typescript!",
-    // files: {
-    //     chunks: {
-    //         head: {
-    //             css: ["./style.css"]
-    //         },
-    //         main: {
-    //             entry: ["./bundle.js"]
-    //         }
-    //     }
-    // }
+    title: "React-Typescript!"
 });
+const uglifyJsPlugin = new UglifyJsPlugin({
+    sourceMap = true
+})
 
 module.exports = [
 {
@@ -37,6 +31,7 @@ module.exports = [
         cleanWebpackPlugin,
         htmlPlugin,
         extractSass,
+        uglifyJsPlugin
     ],
     // Enable sourcemaps for debugging webpack's output.
     devtool: "source-map",
@@ -78,6 +73,9 @@ module.exports = [
         filename: "[name].js",
         path: path.resolve(__dirname, "dist")
     },
+    plugins: [
+        uglifyJsPlugin
+    ],
     // Enable sourcemaps for debugging webpack's output.
     devtool: "source-map",
 
