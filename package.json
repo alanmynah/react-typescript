@@ -43,6 +43,7 @@
     "extract-text-webpack-plugin": "v4.0.0-alpha.0",
     "html-webpack-plugin": "^3.2.0",
     "mock-fetch-api": "^1.0.7",
+    "neworbit-tslint-config": "^2.0.1",
     "node-sass": "^4.9.0",
     "nodemon": "^1.17.4",
     "sass-loader": "^7.0.1",
