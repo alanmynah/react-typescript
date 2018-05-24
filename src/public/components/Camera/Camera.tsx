@@ -39,44 +39,9 @@ export class Camera extends React.Component<CameraProps, CameraState> {
         };
     }
 
-    private async setStream(mode: string) {
-        this.setState({
-            stream: await navigator.mediaDevices.getUserMedia({
-                video: {
-                    width: this.state.width,
-                    height: this.state.height,
-                    facingMode: mode,
-                },
-                audio: false
-            }),
-            facingMode: mode
-        });
-        this.video.srcObject = this.state.stream;
-    }
-
     public async componentDidMount() {
         this.setStream(this.userFacingMode);
         this.paintToCanvas(this.video);
-    }
-
-    private paintToCanvas(video: HTMLVideoElement) {
-        this.canvas.width = this.state.width;
-        this.canvas.height = this.state.height;
-        const context = this.canvas.getContext("2d");
-        return setInterval(() => {
-            context.drawImage(video, 0, 0, this.canvas.width, this.canvas.height);
-        }, 16);
-    }
-
-    private async flipCamera() {
-        this.state.facingMode === this.userFacingMode
-            ? this.setStream(this.environmentFacingMode)
-            : this.setStream(this.userFacingMode);
-    }
-
-    private async takePhoto() {
-        const photo = this.canvas.toDataURL("image/png");
-        this.photo.setAttribute("src", photo);
     }
 
     public render() {
@@ -112,5 +77,40 @@ export class Camera extends React.Component<CameraProps, CameraState> {
                 />
             </Grid >
         );
+    }
+
+    private async setStream(mode: string) {
+        this.setState({
+            stream: await navigator.mediaDevices.getUserMedia({
+                video: {
+                    width: this.state.width,
+                    height: this.state.height,
+                    facingMode: mode,
+                },
+                audio: false
+            }),
+            facingMode: mode
+        });
+        this.video.srcObject = this.state.stream;
+    }
+
+    private paintToCanvas(video: HTMLVideoElement) {
+        this.canvas.width = this.state.width;
+        this.canvas.height = this.state.height;
+        const context = this.canvas.getContext("2d");
+        return setInterval(() => {
+            context.drawImage(video, 0, 0, this.canvas.width, this.canvas.height);
+        }, 16);
+    }
+
+    private async flipCamera() {
+        this.state.facingMode === this.userFacingMode
+            ? this.setStream(this.environmentFacingMode)
+            : this.setStream(this.userFacingMode);
+    }
+
+    private async takePhoto() {
+        const photo = this.canvas.toDataURL("image/png");
+        this.photo.setAttribute("src", photo);
     }
 }
