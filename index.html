@@ -4,7 +4,6 @@
         <meta charset="UTF-8" />
         <title><%= htmlWebpackPlugin.options.title %></title>
         <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=default,fetch,es6"></script>
-        <link rel="stylesheet" href="<%= htmlWebpackPlugin.options.files.chunks.head.css %>" type="text/css"></link>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css" type="text/css"></link>
     </head>
     <body>
@@ -15,6 +14,5 @@
         <script src="../node_modules/react-dom/umd/react-dom.development.js"></script>
 
         <!-- Main -->
-        <script src="<%= htmlWebpackPlugin.options.files.chunks.main.entry %>"></script>
     </body>
 </html>
