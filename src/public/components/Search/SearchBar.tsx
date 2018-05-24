@@ -35,35 +35,10 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
         this.resetComponent();
     }
 
-    private resetComponent = () => this.setState({ isLoading: false, results: [], value: "" });
-
     public async handleChange(event: any) {
         const searchValue = event.target.value;
         this.setState({ isLoading: true, value: searchValue });
         const repos = await this.debouncedEvent(searchValue);
-    }
-
-    private async debouncedEvent(searchValue: string) {
-        if (this.state.value.length < 1) {
-            return this.resetComponent();
-        }
-        const repos = await this.fetchGitRepository(searchValue);
-        if (repos && repos.total_count !== 0) {
-            const results: Result[] = repos.items.map((i) => ({
-                key: i.id,
-                title: i.name,
-                description: i.language,
-                image: i.owner.avatar_url
-            }));
-            this.setState({
-                results,
-                repos: repos.items
-            });
-        }
-        this.props.getSelectedRepositoryKey(repos, this.state);
-        this.setState({
-            isLoading: false
-        });
     }
 
     public async fetchGitRepository(value: string): Promise<GitRepositoryResponse> {
@@ -125,4 +100,30 @@ export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
             />
         );
     }
+
+    private resetComponent = () => this.setState({ isLoading: false, results: [], value: "" });
+
+    private async debouncedEvent(searchValue: string) {
+        if (this.state.value.length < 1) {
+            return this.resetComponent();
+        }
+        const repos = await this.fetchGitRepository(searchValue);
+        if (repos && repos.total_count !== 0) {
+            const results: Result[] = repos.items.map((i) => ({
+                key: i.id,
+                title: i.name,
+                description: i.language,
+                image: i.owner.avatar_url
+            }));
+            this.setState({
+                results,
+                repos: repos.items
+            });
+        }
+        this.props.getSelectedRepositoryKey(repos, this.state);
+        this.setState({
+            isLoading: false
+        });
+    }
+
 }
