@@ -16,6 +16,8 @@ interface CameraState {
     height: number;
     stream: MediaStream;
     facingMode: string;
+    constraints: MediaTrackSupportedConstraints;
+    devices: MediaDeviceInfo[];
 }
 
 export class Camera extends React.Component<CameraProps, CameraState> {
@@ -36,12 +38,15 @@ export class Camera extends React.Component<CameraProps, CameraState> {
             height: this.props.height,
             stream: undefined,
             facingMode: "",
+            constraints: {},
+            devices: []
         };
     }
 
     public async componentDidMount() {
         this.setStream(this.userFacingMode);
         this.paintToCanvas(this.video);
+        this.getDevices();
     }
 
     public render() {
@@ -75,23 +80,75 @@ export class Camera extends React.Component<CameraProps, CameraState> {
                     className="canvas"
                     ref={(input) => { this.canvas = input; }}
                 />
+                <div>
+                    <div>
+                        <span>Width: {this.state.width}</span>
+                        <br/>
+                        <span>Height: {this.state.height}</span>
+                    </div>
+                    <span>{this.state.facingMode}</span>
+                    {this.state.devices.map((device) => {
+                        return (
+                            <ul>
+                                <li>Devices:</li>
+                                <li>{device.deviceId}</li>
+                                <li>{device.kind}</li>
+                                <li>{device.groupId}</li>
+                            </ul>
+                        );
+                    })}
+                </div>
             </Grid >
         );
     }
 
+    private async getDevices() {
+        try {
+            const gotConstraints = await navigator.mediaDevices.getSupportedConstraints();
+            console.dir(gotConstraints);
+            const gotDevices = await navigator.mediaDevices.enumerateDevices();
+            this.setState({
+                constraints: gotConstraints,
+                devices: gotDevices
+            });
+        } catch (error) {
+            Promise.reject(error);
+        }
+    }
+
     private async setStream(mode: string) {
-        this.setState({
-            stream: await navigator.mediaDevices.getUserMedia({
-                video: {
-                    width: this.state.width,
-                    height: this.state.height,
-                    facingMode: mode,
-                },
+        try {
+            this.setState({
+                stream: await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        width: this.state.width,
+                        height: this.state.height,
+                        facingMode: mode,
+                    },
+                    audio: false
+                }),
+                facingMode: mode
+                });
+            this.video.srcObject = this.state.stream;
+        } catch (error) {
+            const constraints = {
+                video: true,
                 audio: false
-            }),
-            facingMode: mode
-        });
-        this.video.srcObject = this.state.stream;
+            };
+            await navigator.getUserMedia(
+                constraints,
+                (stream) => {
+                    this.video.srcObject = stream;
+                },
+                (err) => {
+                    console.dir(err);
+                }
+            );
+            this.setState({
+                facingMode: mode
+            });
+            this.video.play();
+        }
     }
 
     private paintToCanvas(video: HTMLVideoElement) {
