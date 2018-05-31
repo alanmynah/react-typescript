@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Card, Container, Header, List } from "semantic-ui-react";
-import { StatsPage } from "../Stats/StatsPage";
+import { StatsPage } from "./Stats/StatsPage";
 import { Repository } from "./model";
 import { SearchBar, SearchBarState } from "./SearchBar";
 

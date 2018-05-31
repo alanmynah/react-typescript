@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Button, Card, Container, Image, List, Statistic } from "semantic-ui-react";
-import { Repository } from "../Search/model";
+import { Repository } from "../../Search/model";
 
 interface StatsPageProps {
     repository: Repository;
