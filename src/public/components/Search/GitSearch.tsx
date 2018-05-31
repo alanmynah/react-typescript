@@ -4,10 +4,6 @@ import { StatsPage } from "./Stats/StatsPage";
 import { Repository } from "./model";
 import { SearchBar, SearchBarState } from "./SearchBar";
 
-// TODO: -overall things left to do, read below
-// - [] tests - error codes
-// - [] minifying
-
 interface GitSearchState {
   repoLoaded: boolean;
   repository: Repository;
