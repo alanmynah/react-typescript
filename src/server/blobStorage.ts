@@ -1,8 +1,5 @@
 import * as path from "path";
-import * as yargs from "yargs";
-const args = yargs.argv;
 import * as storage from "azure-storage";
-import { create } from "domain";
 
 const devStorageCredentials = storage.generateDevelopmentStorageCredentials();
 
@@ -11,7 +8,7 @@ const containerName = "image-container";
 const sourceFilePath = path.resolve("../../images/landscape.jpg");
 const blobName = path.basename(sourceFilePath, path.extname(sourceFilePath));
 
-const createContainer = () => {
+export const createContainer = () => {
   return new Promise((resolve, reject) => {
       blobService.createContainerIfNotExists(containerName, { publicAccessLevel: "blob" }, err => {
           if (err) {
@@ -23,7 +20,18 @@ const createContainer = () => {
   });
 };
 
-const uploadImage = () => {
+export const uploadCameraImage = (imageText: string) => {
+    return new Promise((resolve, reject) => {
+        blobService.createBlockBlobFromText(containerName, blobName, imageText, err => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve({ message: `Upload of '${blobName}' complete` });
+            }});
+    });
+};
+
+export const uploadImage = () => {
   return new Promise((resolve, reject) => {
       blobService.createBlockBlobFromLocalFile(containerName, blobName, sourceFilePath, err => {
           if (err) {
@@ -35,7 +43,20 @@ const uploadImage = () => {
   });
 };
 
-const list = () => {
+export const downloadImage = () => {
+    const dowloadFilePath = sourceFilePath.replace(".jpg", ".downloaded.jpg");
+    return new Promise((resolve, reject) => {
+        blobService.getBlobToLocalFile(containerName, blobName, dowloadFilePath, err => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve({ message: `Download of '${blobName}' complete` });
+            }
+        });
+    });
+};
+
+export const list = () => {
   return new Promise((resolve, reject) => {
       blobService.listBlobsSegmented(containerName, null, (err, data) => {
           if (err) {
@@ -47,7 +68,7 @@ const list = () => {
   });
 };
 
-const deleteImage = () => {
+export const deleteImage = () => {
   return new Promise((resolve, reject) => {
       blobService.deleteBlobIfExists(containerName, blobName, err => {
           if (err) {
@@ -58,42 +79,3 @@ const deleteImage = () => {
       });
   });
 };
-
-const imageModule: any = {
-  createContainer,
-  uploadImage,
-  deleteImage,
-  list
-};
-
-const commandExists = () => {
-    const exists = imageModule[args.command];
-    return exists;
-};
-
-const executeCommand = async () => {
-  const response = await imageModule[args.command]();
-
-  console.log(response.message);
-
-  if (response.data) {
-      response.data.entries.forEach((entry: any) => {
-          console.log("Name:", entry.name, " Type:", entry.blobType);
-      });
-  }
-};
-
-try {
-  const cmd = args.command;
-
-  console.log(`Executing '${cmd}'...`);
-
-  if (commandExists()) {
-      executeCommand();
-  } else {
-      console.log(`The '${cmd}' command does not exist. Try one of these:`);
-      Object.keys(imageModule).forEach(key => console.log(` - ${key}`));
-  }
-} catch (e) {
-  console.log(e);
-}
