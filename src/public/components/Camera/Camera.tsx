@@ -80,24 +80,6 @@ export class Camera extends React.Component<CameraProps, CameraState> {
                     className="canvas"
                     ref={(input) => { this.canvas = input; }}
                 />
-                <div>
-                    <div>
-                        <span>Width: {this.state.width}</span>
-                        <br/>
-                        <span>Height: {this.state.height}</span>
-                    </div>
-                    <span>{this.state.facingMode}</span>
-                    {this.state.devices.map((device) => {
-                        return (
-                            <ul>
-                                <li>Devices:</li>
-                                <li>{device.deviceId}</li>
-                                <li>{device.kind}</li>
-                                <li>{device.groupId}</li>
-                            </ul>
-                        );
-                    })}
-                </div>
             </Grid >
         );
     }
@@ -168,6 +150,7 @@ export class Camera extends React.Component<CameraProps, CameraState> {
 
     private async takePhoto() {
         const photo = this.canvas.toDataURL("image/png");
+        console.log(photo);
         this.photo.setAttribute("src", photo);
     }
 }
