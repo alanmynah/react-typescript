@@ -1,17 +1,19 @@
-const path = require('path');
-const args = require('yargs').argv;
-const storage = require('azure-storage');
+import * as path from "path";
+import * as yargs from "yargs";
+const args = yargs.argv;
+import * as storage from "azure-storage";
+import { create } from "domain";
 
 const devStorageCredentials = storage.generateDevelopmentStorageCredentials();
 
 const blobService = storage.createBlobService(devStorageCredentials);
-const containerName = 'image-container';
-const sourceFilePath = path.resolve('../../images/landscape.jpg');
+const containerName = "image-container";
+const sourceFilePath = path.resolve("../../images/landscape.jpg");
 const blobName = path.basename(sourceFilePath, path.extname(sourceFilePath));
 
 const createContainer = () => {
   return new Promise((resolve, reject) => {
-      blobService.createContainerIfNotExists(containerName, { publicAccessLevel: 'blob' }, err => {
+      blobService.createContainerIfNotExists(containerName, { publicAccessLevel: "blob" }, err => {
           if (err) {
               reject(err);
           } else {
@@ -33,26 +35,13 @@ const uploadImage = () => {
   });
 };
 
-const downloadImage = () => {
-  const dowloadFilePath = sourceFilePath.replace('.jpg', '.downloaded.jpg');
-  return new Promise((resolve, reject) => {
-      blobService.getBlobToLocalFile(containerName, blobName, dowloadFilePath, err => {
-          if (err) {
-              reject(err);
-          } else {
-              resolve({ message: `Download of '${blobName}' complete` });
-          }
-      });
-  });
-};
-
 const list = () => {
   return new Promise((resolve, reject) => {
       blobService.listBlobsSegmented(containerName, null, (err, data) => {
           if (err) {
               reject(err);
           } else {
-              resolve({ message: `Items in container '${containerName}':`, data: data });
+              resolve({ message: `Items in container '${containerName}':`, data });
           }
       });
   });
@@ -70,29 +59,26 @@ const deleteImage = () => {
   });
 };
 
-const uploadAndList = () => {
-  return _module.upload().then(_module.list);
+const imageModule: any = {
+  createContainer,
+  uploadImage,
+  deleteImage,
+  list
 };
 
-const _module = {
-  "createContainer": createContainer,
-  "uploadAndList": uploadAndList,
-  "upload": uploadImage,
-  "download": downloadImage,
-  "delete": deleteImage,
-  "list": list
+const commandExists = () => {
+    const exists = imageModule[args.command];
+    return exists;
 };
-
-const commandExists = () => exists = !!_module[args.command];
 
 const executeCommand = async () => {
-  const response = await _module[args.command]();
+  const response = await imageModule[args.command]();
 
   console.log(response.message);
 
   if (response.data) {
-      response.data.entries.forEach(entry => {
-          console.log('Name:', entry.name, ' Type:', entry.blobType)
+      response.data.entries.forEach((entry: any) => {
+          console.log("Name:", entry.name, " Type:", entry.blobType);
       });
   }
 };
@@ -106,7 +92,7 @@ try {
       executeCommand();
   } else {
       console.log(`The '${cmd}' command does not exist. Try one of these:`);
-      Object.keys(_module).forEach(key => console.log(` - ${key}`));
+      Object.keys(imageModule).forEach(key => console.log(` - ${key}`));
   }
 } catch (e) {
   console.log(e);
