@@ -43,7 +43,6 @@
     "awesome-typescript-loader": "^5.0.0",
     "clean-webpack-plugin": "^0.1.19",
     "css-loader": "^0.28.11",
-    "dotenv": "^6.0.0",
     "extract-text-webpack-plugin": "v4.0.0-alpha.0",
     "html-webpack-plugin": "^3.2.0",
     "mock-fetch-api": "^1.0.7",
@@ -57,7 +56,6 @@
     "typescript": "2.8.4",
     "uglifyjs-webpack-plugin": "^1.2.5",
     "webpack": "^4.6.0",
-    "webpack-cli": "^2.1.2",
-    "yargs": "^11.0.0"
+    "webpack-cli": "^2.1.2"
   }
 }
