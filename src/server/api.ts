@@ -1,4 +1,5 @@
 import * as Express from "express";
+import { uploadImage } from "./blobStorage";
 
 export const router = Express.Router();
 
@@ -7,7 +8,13 @@ router.get("/photo", (req, res) => {
 });
 
 router.post("/photo", (req, res) => {
-    res.send({type: "POST"});
+    console.log(req.body);
+    uploadImage();
+    res.send({
+        type: "POST",
+        name: req.body.name,
+        age: req.body.age
+    });
 });
 
 router.put("/photo/:id", (req, res) => {
