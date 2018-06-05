@@ -5,19 +5,17 @@ const devStorageCredentials = storage.generateDevelopmentStorageCredentials();
 
 const blobService = storage.createBlobService(devStorageCredentials);
 const containerName = "image-container";
-const sourceFilePath = path.resolve("../../images/landscape.jpg");
+const sourceFilePath = path.resolve("src/server", "./landscape.jpg");
 const blobName = path.basename(sourceFilePath, path.extname(sourceFilePath));
 
-export const createContainer = () => {
-  return new Promise((resolve, reject) => {
-      blobService.createContainerIfNotExists(containerName, { publicAccessLevel: "blob" }, err => {
-          if (err) {
-              reject(err);
-          } else {
-              resolve({ message: `Container '${containerName}' created` });
-          }
-      });
-  });
+export const createContainerIfNotExists = async () => {
+    await blobService.createContainerIfNotExists(containerName, { publicAccessLevel: "blob" }, err => {
+        if (err) {
+            throw(err);
+        } else {
+            console.log(`Container '${containerName}' created`);
+        }
+    });
 };
 
 export const uploadCameraImage = (imageText: string) => {
@@ -31,51 +29,34 @@ export const uploadCameraImage = (imageText: string) => {
     });
 };
 
-export const uploadImage = () => {
-  return new Promise((resolve, reject) => {
-      blobService.createBlockBlobFromLocalFile(containerName, blobName, sourceFilePath, err => {
-          if (err) {
-              reject(err);
-          } else {
-              resolve({ message: `Upload of '${blobName}' complete` });
-          }
-      });
-  });
-};
-
-export const downloadImage = () => {
-    const dowloadFilePath = sourceFilePath.replace(".jpg", ".downloaded.jpg");
-    return new Promise((resolve, reject) => {
-        blobService.getBlobToLocalFile(containerName, blobName, dowloadFilePath, err => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve({ message: `Download of '${blobName}' complete` });
-            }
-        });
+export const uploadImage = async () => {
+    await createContainerIfNotExists();
+    await blobService.createBlockBlobFromLocalFile(containerName, blobName, sourceFilePath, err => {
+        if (err) {
+            throw (err);
+        } else {
+            console.log(`Upload of '${blobName}' complete`);
+        }
     });
 };
 
-export const list = () => {
-  return new Promise((resolve, reject) => {
-      blobService.listBlobsSegmented(containerName, null, (err, data) => {
-          if (err) {
-              reject(err);
-          } else {
-              resolve({ message: `Items in container '${containerName}':`, data });
-          }
-      });
-  });
+export const downloadImage = async () => {
+    const dowloadFilePath = sourceFilePath.replace(".jpg", ".downloaded.jpg");
+    await blobService.getBlobToLocalFile(containerName, blobName, dowloadFilePath, err => {
+        if (err) {
+            throw(err);
+        } else {
+            console.log(`Download of '${blobName}' complete` );
+        }
+    });
 };
 
-export const deleteImage = () => {
-  return new Promise((resolve, reject) => {
-      blobService.deleteBlobIfExists(containerName, blobName, err => {
-          if (err) {
-              reject(err);
-          } else {
-              resolve({ message: `Block blob '${blobName}' deleted` });
-          }
-      });
-  });
+export const deleteImage = async () => {
+    await blobService.deleteBlobIfExists(containerName, blobName, err => {
+        if (err) {
+            throw(err);
+        } else {
+            console.log(`Block blob '${blobName}' deleted`);
+        }
+    });
 };
