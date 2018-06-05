@@ -18,17 +18,6 @@ export const createContainerIfNotExists = async () => {
     });
 };
 
-export const uploadCameraImage = (imageText: string) => {
-    return new Promise((resolve, reject) => {
-        blobService.createBlockBlobFromText(containerName, blobName, imageText, err => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve({ message: `Upload of '${blobName}' complete` });
-            }});
-    });
-};
-
 export const uploadImage = async () => {
     await createContainerIfNotExists();
     await blobService.createBlockBlobFromLocalFile(containerName, blobName, sourceFilePath, err => {
