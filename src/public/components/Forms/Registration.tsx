@@ -1,11 +1,10 @@
 import * as React from "react";
 import { Container, Form } from "semantic-ui-react";
+import axios from "axios";
 
 interface RegistrationState {
     name: string;
     username: string;
-    submittedName: string;
-    submittedUsername: string;
 }
 
 export class Registration extends React.Component<any, RegistrationState> {
@@ -16,8 +15,6 @@ export class Registration extends React.Component<any, RegistrationState> {
         this.state = {
             name: "",
             username: "",
-            submittedName: "",
-            submittedUsername: ""
         };
     }
 
@@ -28,11 +25,15 @@ export class Registration extends React.Component<any, RegistrationState> {
     public handleSubmit = () => {
     const { name, username } = this.state;
 
-    this.setState({ submittedName: name, submittedUsername: username });
+    const apiURL = "/api/photo";
+    axios.post(apiURL, {
+        name,
+        username
+    });
     }
 
     public render() {
-    const { name, username, submittedName, submittedUsername } = this.state;
+    const { name, username } = this.state;
 
     return (
         <div>
@@ -45,8 +46,6 @@ export class Registration extends React.Component<any, RegistrationState> {
             </Form>
             <strong>onChange:</strong>
             <pre>{JSON.stringify({ name, username }, null, 2)}</pre>
-            <strong>onSubmit:</strong>
-            <pre>{JSON.stringify({ submittedName, submittedUsername }, null, 2)}</pre>
         </div>
         );
     }
