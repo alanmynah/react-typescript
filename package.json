@@ -5,9 +5,10 @@
   "main": "server.js",
   "scripts": {
     "build:typescript": "tsc",
-    "build": "webpack",
+    "build": "webpack --config webpack.dev.js",
+    "build:production": "webpack --config webpack.prod.js",
     "nodemon": "nodemon ./dist/server.js",
-    "watch": "webpack --watch",
+    "watch": "webpack --config webpack.dev.js --watch",
     "clean": "rimraf ./node_modules/",
     "test": "rimraf ./test_build/ && tsc -p tsconfig-test.json && alsatian \"./test_build/test/**/*.test.js\"",
     "test-test": "alsatian \"./test_build/test/**/*.test.js\"",
@@ -57,6 +58,7 @@
     "typescript": "2.8.4",
     "uglifyjs-webpack-plugin": "^1.2.5",
     "webpack": "^4.6.0",
-    "webpack-cli": "^2.1.2"
+    "webpack-cli": "^2.1.2",
+    "webpack-merge": "^4.1.2"
   }
 }
