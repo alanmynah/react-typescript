@@ -7,7 +7,7 @@ import { createContainerIfNotExists } from "./blobStorage";
 
 const server = Express();
 
-server.use(bodyParser.json());
+server.use(bodyParser.json({limit: "100kb"}));
 
 server.use("/", Express.static(path.resolve("dist")));
 server.use("/node_modules", Express.static(path.resolve("node_modules")));
