@@ -1,34 +1,37 @@
 import * as path from "path";
+import * as uuid from "uuid";
 import * as storage from "azure-storage";
 import { UserDetails } from "./models";
 
 const devStorageCredentials = storage.generateDevelopmentStorageCredentials();
 
 const blobService = storage.createTableService(devStorageCredentials);
-const tableName = "user-table";
+const tableName = "usertable";
 const entityGenerator = storage.TableUtilities.entityGenerator;
 
-const createTableIfNotExists = async () => {
-    await blobService.createTableIfNotExists(tableName, err => {
-        if (err) {
-            throw(err);
+export const createTableIfNotExists = async () => {
+    await blobService.createTableIfNotExists(tableName, (error, result) => {
+        if (error) {
+            throw(error);
         } else {
-            console.log(`Container ${tableName} created`);
+            console.log(`Table ${result.TableName} ${result.created ? "created" : "already exists" }`);
         }
     });
 };
 
 export const uploadUser = async (userDetails: UserDetails) => {
-    await createTableIfNotExists();
     const task = {
         PartitionKey: entityGenerator.String("users"),
-        RowKey: entityGenerator.Guid,
+        RowKey: entityGenerator.String(`${uuid.v1()}`),
         name: userDetails.name,
         username: userDetails.username
     };
 
-    await blobService.insertEntity(tableName, task, {echoContent: true}, (error, result, response) => {
-        if (!error) {
-            console.log(`Added ${task.username} to the ${task.PartitionKey} table`);
-        }});
+    await blobService.insertEntity(tableName, task, (error, result, response) => {
+        if (error) {
+            throw(error);
+        } else {
+            console.log(`Added ${task.username} to the ${tableName} table`);
+        }
+    });
 };

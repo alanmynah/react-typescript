@@ -9,17 +9,16 @@ const sourceFilePath = path.resolve("src/server", "./landscape.jpg");
 const blobName = path.basename(sourceFilePath, path.extname(sourceFilePath));
 
 export const createContainerIfNotExists = async () => {
-    await blobService.createContainerIfNotExists(containerName, { publicAccessLevel: "blob" }, err => {
-        if (err) {
-            throw(err);
+    await blobService.createContainerIfNotExists(containerName, { publicAccessLevel: "blob" }, (error, result) => {
+        if (error) {
+            throw(error);
         } else {
-            console.log(`Container '${containerName}' created`);
+            console.log(`Blob ${containerName} ${result.created ? "created" : "already exists" }`);
         }
     });
 };
 
 export const uploadImage = async () => {
-    await createContainerIfNotExists();
     await blobService.createBlockBlobFromLocalFile(containerName, blobName, sourceFilePath, err => {
         if (err) {
             throw (err);
