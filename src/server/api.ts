@@ -19,8 +19,7 @@ router.post("/photo", (req, res) => {
     uploadUser(user);
     res.send({
         type: "POST",
-        name: req.body.name,
-        username: req.body.username
+        user,
     });
 });
 
