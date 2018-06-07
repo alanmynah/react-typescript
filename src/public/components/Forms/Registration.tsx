@@ -8,6 +8,8 @@ interface RegistrationState {
 }
 
 export class Registration extends React.Component<any, RegistrationState> {
+    private readonly apiURL = "/api/user";
+
     constructor(props: any) {
         super(props);
         this.handleChange = this.handleChange.bind(this);
@@ -25,8 +27,7 @@ export class Registration extends React.Component<any, RegistrationState> {
     public handleSubmit = () => {
     const { name, username } = this.state;
 
-    const apiURL = "/api/photo";
-    axios.post(apiURL, {
+    axios.post(this.apiURL, {
         name,
         username
     });

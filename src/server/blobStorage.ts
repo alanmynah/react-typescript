@@ -1,5 +1,6 @@
 import * as path from "path";
 import * as storage from "azure-storage";
+import { PhotoBlob } from "./models";
 
 const devStorageCredentials = storage.generateDevelopmentStorageCredentials();
 
@@ -14,6 +15,21 @@ export const createContainerIfNotExists = async () => {
             throw(error);
         } else {
             console.log(`Blob ${containerName} ${result.created ? "created" : "already exists" }`);
+        }
+    });
+};
+
+export const uploadUserPhoto = async (blob: PhotoBlob) => {
+    const uploadOptions = {
+        container: containerName,
+        blob: blob.blobName,
+        text: blob.text
+    };
+    await blobService.createBlockBlobFromText(containerName, blob.blobName, blob.text, err => {
+        if (err) {
+            throw (err);
+        } else {
+            console.log(`Upload of userphoto complete`);
         }
     });
 };

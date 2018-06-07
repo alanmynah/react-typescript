@@ -7,7 +7,8 @@
     "build:typescript": "tsc",
     "build": "webpack --config webpack.dev.js",
     "build:production": "webpack --config webpack.prod.js",
-    "nodemon": "nodemon ./dist/server.js",
+    "dev": "ts-node --inspect=5858 ./src/server/server.ts",
+    "nodemon": "nodemon --inspect ./dist/server.js",
     "watch": "webpack --config webpack.dev.js --watch",
     "clean": "rimraf ./node_modules/",
     "test": "rimraf ./test_build/ && tsc -p tsconfig-test.json && alsatian \"./test_build/test/**/*.test.js\"",
@@ -37,6 +38,7 @@
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "semantic-ui-react": "^0.78.3",
+    "ts-node": "^6.1.0",
     "uuid": "^3.2.1"
   },
   "devDependencies": {

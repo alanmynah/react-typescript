@@ -1,6 +1,8 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Button, Grid, Image, List, Segment } from "semantic-ui-react";
+import axios from "axios";
+import { PhotoBlob } from "../../../server/models";
 
 interface CameraProps {
     width: number;
@@ -149,8 +151,15 @@ export class Camera extends React.Component<CameraProps, CameraState> {
     }
 
     private async takePhoto() {
-        const photo = this.canvas.toDataURL("image/png");
-        console.log(photo);
-        this.photo.setAttribute("src", photo);
+        const photo: PhotoBlob = {
+            blobName: "photoBlob",
+            text: this.canvas.toDataURL("image/png")
+        };
+        console.log("sent photo from react");
+        axios.post("api/photo", {
+            photo
+        },
+        );
+        this.photo.setAttribute("src", photo.text);
     }
 }
