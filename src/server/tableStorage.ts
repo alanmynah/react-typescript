@@ -1,6 +1,5 @@
-import * as path from "path";
-import * as uuid from "uuid";
 import * as storage from "azure-storage";
+import * as uuid from "uuid";
 import { UserDetails } from "./models";
 
 const devStorageCredentials = storage.generateDevelopmentStorageCredentials();

@@ -1,7 +1,8 @@
 import * as Express from "express";
-import { uploadImage, uploadUserPhoto } from "./blobStorage";
+import { uploadUserPhoto } from "./blobStorage";
 import { uploadUser } from "./tableStorage";
 import { UserDetails, PhotoBlob } from "./models";
+import { v1 } from "uuid";
 
 export const router = Express.Router();
 
@@ -10,16 +11,15 @@ router.get("/photo", (req, res) => {
 });
 
 router.post("/photo", (req, res) => {
-    console.log("got photo in the api");
     const photo: PhotoBlob = {
-        blobName: req.body.blobName,
-        text: req.body.file
+        blobName: v1().toString(),
+        text: req.body.text
     };
     uploadUserPhoto(photo);
+    res.end("Received, thank you");
 });
 
 router.post("/user", (req, res) => {
-    console.log(req.body);
     const user: UserDetails = {
         name: req.body.name,
         username: req.body.username

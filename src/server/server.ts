@@ -1,13 +1,13 @@
-import * as bodyParser from "body-parser";
 import * as Express from "express";
 import * as path from "path";
+import { json } from "body-parser";
 import { router } from "./api";
 import { createTableIfNotExists } from "./tableStorage";
 import { createContainerIfNotExists } from "./blobStorage";
 
 const server = Express();
 
-server.use(bodyParser.json({limit: "500kb"}));
+server.use(json({limit: "500kb"}));
 
 server.use("/", Express.static(path.resolve("dist")));
 server.use("/node_modules", Express.static(path.resolve("node_modules")));

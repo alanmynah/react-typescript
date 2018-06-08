@@ -20,39 +20,23 @@ export const createContainerIfNotExists = async () => {
 };
 
 export const uploadUserPhoto = async (blob: PhotoBlob) => {
-    const uploadOptions = {
-        container: containerName,
-        blob: blob.blobName,
-        text: blob.text
-    };
-    await blobService.createBlockBlobFromText(containerName, blob.blobName, blob.text, err => {
-        if (err) {
-            throw (err);
-        } else {
-            console.log(`Upload of userphoto complete`);
-        }
-    });
-};
+    const rawData = blob.text;
+    const matches = rawData.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    const blobType = matches[1];
+    const blobBuffer = new Buffer(matches[2], "base64");
 
-export const uploadImage = async () => {
-    await blobService.createBlockBlobFromLocalFile(containerName, blobName, sourceFilePath, err => {
-        if (err) {
-            throw (err);
-        } else {
-            console.log(`Upload of '${blobName}' complete`);
-        }
-    });
-};
-
-export const downloadImage = async () => {
-    const dowloadFilePath = sourceFilePath.replace(".jpg", ".downloaded.jpg");
-    await blobService.getBlobToLocalFile(containerName, blobName, dowloadFilePath, err => {
-        if (err) {
-            throw(err);
-        } else {
-            console.log(`Download of '${blobName}' complete` );
-        }
-    });
+    await blobService.createBlockBlobFromText(
+        containerName,
+        blob.blobName,
+        blobBuffer,
+        { contentSettings: { contentType: blobType } },
+        (err, result) => {
+            if (err) {
+                throw (err);
+            } else {
+                console.dir(result);
+            }
+        });
 };
 
 export const deleteImage = async () => {

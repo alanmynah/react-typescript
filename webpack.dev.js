@@ -20,13 +20,13 @@ module.exports = [
     target: "node",
     mode: "development",
     entry: {
-        bundle: "./src/public/index.tsx",
-        server: "./src/server/server.ts"
+        server: "./src/server/server.ts",
+        bundle: "./src/public/index.tsx"
     },
     devtool: "inline-source-map",
     output: {
         filename: "[name].js",
-        path: path.resolve(__dirname, "dist")
+        path: path.resolve(__dirname, "dist"),
     },
     plugins: [
         cleanWebpackPlugin,
@@ -60,7 +60,7 @@ module.exports = [
 
     externals: {
         "react": "React",
-        "react-dom": "ReactDOM"
+        "react-dom": "ReactDOM",
     },
 },
 ];

@@ -150,16 +150,14 @@ export class Camera extends React.Component<CameraProps, CameraState> {
             : this.setStream(this.userFacingMode);
     }
 
-    private async takePhoto() {
+    private takePhoto() {
         const photo: PhotoBlob = {
-            blobName: "photoBlob",
-            text: this.canvas.toDataURL("image/png")
+            blobName: "blobname",
+            text: this.canvas.toDataURL("image/jpeg")
         };
-        console.log("sent photo from react");
-        axios.post("api/photo", {
-            photo
-        },
-        );
+        console.log(`sent photo ${photo.blobName} from react`);
+        console.dir(photo);
+        axios.post("api/photo", photo);
         this.photo.setAttribute("src", photo.text);
     }
 }
