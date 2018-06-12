@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Container, Form } from "semantic-ui-react";
+import { Form } from "semantic-ui-react";
+import { Camera } from "../Camera/Camera";
 import axios from "axios";
 
 interface RegistrationState {
@@ -49,13 +50,12 @@ export class Registration extends React.Component<any, RegistrationState> {
         <div>
             <Form onSubmit={this.handleSubmit}>
                 <Form.Group>
-                <Form.Input placeholder="Name" name="name" value={name} onChange={this.handleNameChange} />
-                <Form.Input placeholder="Username" name="username" value={username} onChange={this.handleUsernameChange} />
-                <Form.Button content="Submit" />
+                    <Form.Input placeholder="Name" name="name" value={name} onChange={this.handleNameChange} />
+                    <Form.Input placeholder="Username" name="username" value={username} onChange={this.handleUsernameChange} />
                 </Form.Group>
+                <br/>
+                <Form.Button content="Submit"/>
             </Form>
-            <strong>onChange:</strong>
-            <pre>{JSON.stringify({ name, username }, null, 2)}</pre>
         </div>
         );
     }

@@ -1,5 +1,6 @@
 import * as Express from "express";
-import { uploadUserPhoto } from "./blobStorage";
+import * as path from "path";
+import { uploadPhotoAndRetrieveUrl } from "./blobStorage";
 import { uploadUser } from "./tableStorage";
 import { UserDetails, PhotoBlob } from "./models";
 import { v1 } from "uuid";
@@ -10,13 +11,17 @@ router.get("/photo", (req, res) => {
     res.send({type: "GET"});
 });
 
-router.post("/photo", (req, res) => {
-    const photo: PhotoBlob = {
+router.post("/photo", async (req, res) => {
+    const photoBlob: PhotoBlob = {
         blobName: v1().toString(),
         text: req.body.text
     };
-    uploadUserPhoto(photo);
-    res.end("Received, thank you");
+
+    const imageUrl = await uploadPhotoAndRetrieveUrl(photoBlob);
+
+    res.status(200).json({
+        imageUrl
+    });
 });
 
 router.post("/user", (req, res) => {

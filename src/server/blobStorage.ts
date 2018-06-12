@@ -19,24 +19,38 @@ export const createContainerIfNotExists = async () => {
     });
 };
 
-export const uploadUserPhoto = async (blob: PhotoBlob) => {
+export const uploadPhotoAndRetrieveUrl = async (blob: PhotoBlob) => {
     const rawData = blob.text;
     const matches = rawData.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
     const blobType = matches[1];
     const blobBuffer = new Buffer(matches[2], "base64");
-
-    await blobService.createBlockBlobFromText(
+    return new Promise((resolve, reject) => {
+        blobService.createBlockBlobFromText(
         containerName,
         blob.blobName,
         blobBuffer,
         { contentSettings: { contentType: blobType } },
-        (err, result) => {
+        async (err) => {
             if (err) {
-                throw (err);
+                reject(err);
             } else {
-                console.dir(result);
+                resolve(await retrieveBlobUrl(blob.blobName));
             }
         });
+    });
+};
+
+const retrieveBlobUrl = async (blobId: string) => {
+    // is required for production?
+    // const sasToken = blobService.generateSharedAccessSignature(
+    //     containerName,
+    //     blobId, {
+    //         AccessPolicy: {
+    //             Permissions: "Read",
+    //             Expiry: storage.date.hoursFromNow(2)
+    //     }});
+    const blobUrl = await blobService.getUrl(containerName, blobId);
+    return blobUrl;
 };
 
 export const deleteImage = async () => {

@@ -157,7 +157,11 @@ export class Camera extends React.Component<CameraProps, CameraState> {
         };
         console.log(`sent photo ${photo.blobName} from react`);
         console.dir(photo);
-        axios.post("api/photo", photo);
-        this.photo.setAttribute("src", photo.text);
+        axios.post("api/photo", photo)
+        .then((response) => {
+            console.dir(response);
+            this.photo.setAttribute("src", response.data.imageUrl);
+        });
+        // this.photo.setAttribute("src", photo.text);
     }
 }
