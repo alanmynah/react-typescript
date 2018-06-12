@@ -13,14 +13,14 @@ router.get("/photo", (req, res) => {
 
 router.post("/photo", async (req, res) => {
     const photoBlob: PhotoBlob = {
-        blobName: v1().toString(),
+        blobId: v1().toString(),
         text: req.body.text
     };
 
     const imageUrl = await uploadPhotoAndRetrieveUrl(photoBlob);
 
     const data: JsonBlobData = {
-        blobName: photoBlob.blobName,
+        blobId: photoBlob.blobId,
         imageUrl
     };
 
@@ -30,9 +30,11 @@ router.post("/photo", async (req, res) => {
 router.post("/user", (req, res) => {
     const user: UserDetails = {
         name: req.body.name,
-        username: req.body.username
+        username: req.body.username,
+        blobId: req.body.blobId
     };
     uploadUser(user);
+    res.end();
 });
 
 router.put("/photo/:id", (req, res) => {
