@@ -13,7 +13,6 @@ export class App extends React.Component {
                 <Header />
                 <Container text style={{ marginTop: "7em" }}>
                     <Registration />
-                    <Camera width={320} height={280}/>
                 </Container>
                 <Footer />
             </div>);
