@@ -23,7 +23,8 @@ export const uploadUser = async (userDetails: UserDetails) => {
         PartitionKey: entityGenerator.String("users"),
         RowKey: entityGenerator.String(`${uuid.v1()}`),
         name: userDetails.name,
-        username: userDetails.username
+        username: userDetails.username,
+        blobId: userDetails.blobId
     };
 
     await blobService.insertEntity(tableName, task, (error, result, response) => {

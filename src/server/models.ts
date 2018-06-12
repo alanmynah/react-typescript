@@ -1,14 +1,15 @@
 export interface UserDetails {
     name: string;
     username: string;
+    blobId: string;
 }
 
 export interface PhotoBlob {
-    blobName: string;
+    blobId: string;
     text: string;
 }
 
 export interface JsonBlobData {
-    blobName: string;
+    blobId: string;
     imageUrl: {};
 }

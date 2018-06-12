@@ -6,6 +6,7 @@ import axios from "axios";
 interface RegistrationState {
     name: string;
     username: string;
+    blobId: string;
 }
 
 export class Registration extends React.Component<any, RegistrationState> {
@@ -16,9 +17,11 @@ export class Registration extends React.Component<any, RegistrationState> {
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handleUsernameChange = this.handleUsernameChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.getBlobId = this.getBlobId.bind(this);
         this.state = {
             name: "",
             username: "",
+            blobId: "",
         };
     }
 
@@ -34,12 +37,24 @@ export class Registration extends React.Component<any, RegistrationState> {
         });
     }
 
+    public getBlobId(id: string) {
+        this.setState({
+            blobId: id
+        });
+    }
+
     public handleSubmit = () => {
-    const { name, username } = this.state;
+    const { name, username, blobId } = this.state;
 
     axios.post(this.apiURL, {
         name,
-        username
+        username,
+        blobId
+    });
+    this.setState ({
+        name: "",
+        username: "",
+        blobId: "",
     });
     }
 
@@ -54,8 +69,10 @@ export class Registration extends React.Component<any, RegistrationState> {
                     <Form.Input placeholder="Username" name="username" value={username} onChange={this.handleUsernameChange} />
                 </Form.Group>
                 <br/>
+                <br/>
                 <Form.Button content="Submit"/>
             </Form>
+            <Camera width={320} height={280} getId={this.getBlobId}/>
         </div>
         );
     }

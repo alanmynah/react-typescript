@@ -2,15 +2,12 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Button, Grid, Image, List, Segment } from "semantic-ui-react";
 import axios from "axios";
-import { PhotoBlob } from "../../../server/models";
+import { PhotoBlob, JsonBlobData } from "../../../server/models";
 
 interface CameraProps {
     width: number;
     height: number;
-}
-
-interface DeviceProps {
-    devices: MediaDeviceInfo[];
+    getId: any;
 }
 
 interface CameraState {
@@ -20,6 +17,7 @@ interface CameraState {
     facingMode: string;
     constraints: MediaTrackSupportedConstraints;
     devices: MediaDeviceInfo[];
+    blobId: string;
 }
 
 export class Camera extends React.Component<CameraProps, CameraState> {
@@ -32,7 +30,7 @@ export class Camera extends React.Component<CameraProps, CameraState> {
 
     constructor(props: any) {
         super(props);
-        this.takePhoto = this.takePhoto.bind(this);
+        this.takeRegistrationPhoto = this.takeRegistrationPhoto.bind(this);
         this.paintToCanvas = this.paintToCanvas.bind(this);
         this.flipCamera = this.flipCamera.bind(this);
         this.state = {
@@ -41,7 +39,8 @@ export class Camera extends React.Component<CameraProps, CameraState> {
             stream: undefined,
             facingMode: "",
             constraints: {},
-            devices: []
+            devices: [],
+            blobId: ""
         };
     }
 
@@ -64,7 +63,7 @@ export class Camera extends React.Component<CameraProps, CameraState> {
                             </Segment>
                         </Grid.Row>
                         <Grid.Row>
-                            <Button className="button" onClick={this.takePhoto} icon="camera" />
+                            <Button className="button" onClick={this.takeRegistrationPhoto} icon="camera" />
                             <Button className="button" onClick={this.flipCamera}>Flip Camera</Button>
                         </Grid.Row>
                     </Grid>
@@ -150,18 +149,20 @@ export class Camera extends React.Component<CameraProps, CameraState> {
             : this.setStream(this.userFacingMode);
     }
 
-    private takePhoto() {
+    private takeRegistrationPhoto() {
         const photo: PhotoBlob = {
-            blobName: "blobname",
+            blobId: "blobname",
             text: this.canvas.toDataURL("image/jpeg")
         };
-        console.log(`sent photo ${photo.blobName} from react`);
-        console.dir(photo);
         axios.post("api/photo", photo)
         .then((response) => {
             console.dir(response);
             this.photo.setAttribute("src", response.data.imageUrl);
+            this.setState({
+                blobId: response.data.blobId
+            });
+        }).then(() => {
+            this.props.getId(this.state.blobId);
         });
-        // this.photo.setAttribute("src", photo.text);
     }
 }

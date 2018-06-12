@@ -27,14 +27,14 @@ export const uploadPhotoAndRetrieveUrl = async (blob: PhotoBlob) => {
     return new Promise((resolve, reject) => {
         blobService.createBlockBlobFromText(
         containerName,
-        blob.blobName,
+        blob.blobId,
         blobBuffer,
         { contentSettings: { contentType: blobType } },
         async (err) => {
             if (err) {
                 reject(err);
             } else {
-                resolve(await retrieveBlobUrl(blob.blobName));
+                resolve(await retrieveBlobUrl(blob.blobId));
             }
         });
     });
