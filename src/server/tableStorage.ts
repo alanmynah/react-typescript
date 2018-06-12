@@ -27,7 +27,7 @@ export const uploadUser = async (userDetails: UserDetails) => {
         blobId: userDetails.blobId
     };
 
-    await blobService.insertEntity(tableName, task, (error, result, response) => {
+    await blobService.insertEntity(tableName, task, (error) => {
         if (error) {
             throw(error);
         } else {

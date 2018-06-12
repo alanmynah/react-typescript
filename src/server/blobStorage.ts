@@ -26,22 +26,23 @@ export const uploadPhotoAndRetrieveUrl = async (blob: PhotoBlob) => {
     const blobBuffer = new Buffer(matches[2], "base64");
     return new Promise((resolve, reject) => {
         blobService.createBlockBlobFromText(
-        containerName,
-        blob.blobId,
-        blobBuffer,
-        { contentSettings: { contentType: blobType } },
-        async (err) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(await retrieveBlobUrl(blob.blobId));
+            containerName,
+            blob.blobId,
+            blobBuffer,
+            { contentSettings: { contentType: blobType } },
+            async (err) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(await retrieveBlobUrl(blob.blobId));
+                }
             }
-        });
+        );
     });
 };
 
 const retrieveBlobUrl = async (blobId: string) => {
-    // is required for production?
+    // sasToken might be required for production
     // const sasToken = blobService.generateSharedAccessSignature(
     //     containerName,
     //     blobId, {
