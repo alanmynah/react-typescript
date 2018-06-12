@@ -2,7 +2,7 @@ import * as Express from "express";
 import * as path from "path";
 import { uploadPhotoAndRetrieveUrl } from "./blobStorage";
 import { uploadUser } from "./tableStorage";
-import { UserDetails, PhotoBlob } from "./models";
+import { UserDetails, PhotoBlob, JsonBlobData } from "./models";
 import { v1 } from "uuid";
 
 export const router = Express.Router();
@@ -19,9 +19,12 @@ router.post("/photo", async (req, res) => {
 
     const imageUrl = await uploadPhotoAndRetrieveUrl(photoBlob);
 
-    res.status(200).json({
+    const data: JsonBlobData = {
+        blobName: photoBlob.blobName,
         imageUrl
-    });
+    };
+
+    res.status(200).json(data);
 });
 
 router.post("/user", (req, res) => {

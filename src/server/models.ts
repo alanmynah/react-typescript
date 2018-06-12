@@ -7,3 +7,8 @@ export interface PhotoBlob {
     blobName: string;
     text: string;
 }
+
+export interface JsonBlobData {
+    blobName: string;
+    imageUrl: {};
+}
