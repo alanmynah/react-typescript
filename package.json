@@ -28,6 +28,8 @@
   "dependencies": {
     "@types/azure": "^0.9.19",
     "@types/express": "^4.16.0",
+    "@types/react-router": "^4.0.26",
+    "@types/react-router-dom": "^4.2.7",
     "@types/uuid": "^3.4.3",
     "@types/yargs": "^11.0.0",
     "axios": "^0.18.0",
@@ -38,6 +40,8 @@
     "npm": "^6.1.0",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
+    "react-router": "^4.3.1",
+    "react-router-dom": "^4.3.1",
     "semantic-ui-react": "^0.81.1",
     "ts-node": "^6.1.0",
     "uuid": "^3.2.1"

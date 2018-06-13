@@ -2,14 +2,16 @@ import * as React from "react";
 import { Form } from "semantic-ui-react";
 import { Camera } from "../Camera/Camera";
 import axios from "axios";
+import { withRouter, Redirect } from "react-router-dom";
 
 interface RegistrationState {
     name: string;
     username: string;
     blobId: string;
+    redirect: boolean;
 }
 
-export class Registration extends React.Component<any, RegistrationState> {
+class Registration extends React.Component<any, RegistrationState> {
     private readonly apiURL = "/api/user";
 
     constructor(props: any) {
@@ -22,6 +24,7 @@ export class Registration extends React.Component<any, RegistrationState> {
             name: "",
             username: "",
             blobId: "",
+            redirect: false
         };
     }
 
@@ -44,18 +47,16 @@ export class Registration extends React.Component<any, RegistrationState> {
     }
 
     public handleSubmit = () => {
-    const { name, username, blobId } = this.state;
+        const { name, username, blobId } = this.state;
 
-    axios.post(this.apiURL, {
-        name,
-        username,
-        blobId
-    });
-    this.setState ({
-        name: "",
-        username: "",
-        blobId: "",
-    });
+        axios.post(this.apiURL, {
+            name,
+            username,
+            blobId
+        });
+        this.setState ({
+            redirect: true
+        });
     }
 
     public render() {
@@ -73,7 +74,10 @@ export class Registration extends React.Component<any, RegistrationState> {
                 <Form.Button content="Submit"/>
             </Form>
             <Camera width={320} height={280} getId={this.getBlobId}/>
+            {this.state.redirect && <Redirect to="thankyou" push={true} />}
         </div>
         );
     }
 }
+
+export default withRouter(Registration);
