@@ -41,16 +41,21 @@ export const uploadPhotoAndRetrieveUrl = async (blob: PhotoBlob) => {
     });
 };
 
-const retrieveBlobUrl = async (blobId: string) => {
-    // sasToken might be required for production
-    // const sasToken = blobService.generateSharedAccessSignature(
-    //     containerName,
-    //     blobId, {
-    //         AccessPolicy: {
-    //             Permissions: "Read",
-    //             Expiry: storage.date.hoursFromNow(2)
-    //     }});
+export const retrieveBlobUrl = async (blobId: string) => {
     const blobUrl = await blobService.getUrl(containerName, blobId);
+    return blobUrl;
+};
+
+export const retrieveBlobUrlWithSasToken = async (blobId: string) => {
+    // sasToken might be required for production
+    const sasToken = blobService.generateSharedAccessSignature(
+        containerName,
+        blobId, {
+            AccessPolicy: {
+                Permissions: "Read",
+                Expiry: storage.date.hoursFromNow(2)
+        }});
+    const blobUrl = await blobService.getUrl(containerName, blobId, sasToken);
     return blobUrl;
 };
 

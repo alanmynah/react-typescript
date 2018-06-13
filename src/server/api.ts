@@ -4,11 +4,14 @@ import { uploadPhotoAndRetrieveUrl } from "./blobStorage";
 import { uploadUser } from "./tableStorage";
 import { UserDetails, PhotoBlob, JsonBlobData } from "./models";
 import { v1 } from "uuid";
+import { processImage } from "./faceApi";
 
 export const router = Express.Router();
 
-router.get("/photo", (req, res) => {
-    res.send({type: "GET"});
+router.get("/photo", async (req, res) => {
+    const imageId = "a7744af0-6ee6-11e8-be63-954e37460bf2";
+    const faceApiData = await processImage(imageId);
+    res.json(faceApiData);
 });
 
 router.post("/photo", async (req, res) => {
