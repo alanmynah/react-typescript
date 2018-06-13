@@ -3,12 +3,16 @@ import { Form } from "semantic-ui-react";
 import { Camera } from "../Camera/Camera";
 import axios from "axios";
 import { withRouter, Redirect } from "react-router-dom";
+import { ValidationError } from "./ValidationError";
+import { validate } from "./validate";
 
 interface RegistrationState {
     name: string;
     username: string;
     blobId: string;
     redirect: boolean;
+    displayWarning: boolean;
+    allowedToSubmit: boolean;
 }
 
 class Registration extends React.Component<any, RegistrationState> {
@@ -24,7 +28,9 @@ class Registration extends React.Component<any, RegistrationState> {
             name: "",
             username: "",
             blobId: "",
-            redirect: false
+            redirect: false,
+            displayWarning: false,
+            allowedToSubmit: false,
         };
     }
 
@@ -32,12 +38,30 @@ class Registration extends React.Component<any, RegistrationState> {
         this.setState({
             name: event.target.value
         });
+        this.validateInputFor(event);
+
     }
 
     public handleUsernameChange(event: any) {
         this.setState({
             username: event.target.value
         });
+        this.validateInputFor(event);
+    }
+
+    public validateInputFor(event: any) {
+        if (event.target.value === "") {
+            this.setState({
+                displayWarning: false,
+                allowedToSubmit: false,
+            });
+        } else {
+            const isValid = validate(event.target.value);
+            this.setState({
+                displayWarning: !isValid,
+                allowedToSubmit: isValid,
+            });
+        }
     }
 
     public getBlobId(id: string) {
@@ -60,21 +84,21 @@ class Registration extends React.Component<any, RegistrationState> {
     }
 
     public render() {
-    const { name, username } = this.state;
+    const { name, username, allowedToSubmit, redirect, displayWarning } = this.state;
 
     return (
         <div>
+            {(displayWarning) && <ValidationError />}
             <Form onSubmit={this.handleSubmit}>
                 <Form.Group>
                     <Form.Input placeholder="Name" name="name" value={name} onChange={this.handleNameChange} />
                     <Form.Input placeholder="Username" name="username" value={username} onChange={this.handleUsernameChange} />
+                    {(allowedToSubmit) && <Form.Button content="Submit"/>}
                 </Form.Group>
                 <br/>
-                <br/>
-                <Form.Button content="Submit"/>
             </Form>
             <Camera width={320} height={280} getId={this.getBlobId}/>
-            {this.state.redirect && <Redirect to="thankyou" push={true} />}
+            {redirect && <Redirect to="thankyou" push={true} />}
         </div>
         );
     }
