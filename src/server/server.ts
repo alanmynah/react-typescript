@@ -1,3 +1,4 @@
+import * as dotenv from "dotenv";
 import * as Express from "express";
 import * as path from "path";
 import { json } from "body-parser";
@@ -5,6 +6,7 @@ import { router } from "./api";
 import { createTableIfNotExists } from "./tableStorage";
 import { createContainerIfNotExists } from "./blobStorage";
 
+dotenv.config();
 const server = Express();
 
 server.use(json({limit: "500kb"}));
