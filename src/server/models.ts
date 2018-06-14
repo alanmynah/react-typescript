@@ -1,6 +1,6 @@
 export interface TableTask {
-    PartitionKey: EntityProperty<string>;
-    RowKey: EntityProperty<string>;
+    PartitionKey: any;
+    RowKey: any;
     name: string;
     username: string;
     blobId: string;
