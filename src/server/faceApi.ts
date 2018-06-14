@@ -1,22 +1,21 @@
 import * as request from "request";
-import { retrieveBlobUrl, retrieveBlobUrlWithSasToken } from "./blobStorage";
+import { retrieveNgrokBlobUrl } from "./blobStorage";
 
 export const processImage = async (imageId: string) => {
-    const subscriptionKey = "4d798eff7c3c4a5ba2767864b9bb6cd6";
-    const uriBase = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect";
+    const subscriptionKey = process.env.FACE_API_KEY_1;
+    const uriDetectBase = process.env.FACE_API_ENDPOINT + "/detect";
 
     // const imageUrl = "https://upload.wikimedia.org/wikipedia/commons/3/37/Dagestani_man_and_woman.jpg";
     // const imageUrl = await retrieveBlobUrl(imageId);
-    const imageUrl = "https://8e210bc1.ngrok.io/devstoreaccount1/image-container/a7744af0-6ee6-11e8-be63-954e37460bf2";
+    const imageUrl = await retrieveNgrokBlobUrl(imageId);
     const params = {
         returnFaceId: "true",
         returnFaceLandmarks: "false",
-        returnFaceAttributes: "age,gender,headPose,smile,facialHair,glasses," +
-            "emotion,hair,makeup,occlusion,accessories,blur,exposure,noise"
+        returnFaceAttributes: "age,gender,smile,emotion,hair,makeup,accessories"
     };
 
     const options = {
-        uri: uriBase,
+        uri: uriDetectBase,
         qs: params,
         body: '{"url": ' + '"' + imageUrl + '"}',
         headers: {

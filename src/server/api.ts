@@ -9,9 +9,7 @@ import { processImage } from "./faceApi";
 export const router = Express.Router();
 
 router.get("/photo", async (req, res) => {
-    const imageId = "a7744af0-6ee6-11e8-be63-954e37460bf2";
-    const faceApiData = await processImage(imageId);
-    res.json(faceApiData);
+    res.send({type: "GET"});
 });
 
 router.post("/photo", async (req, res) => {
@@ -30,14 +28,17 @@ router.post("/photo", async (req, res) => {
     res.status(200).json(data);
 });
 
-router.post("/user", (req, res) => {
+router.post("/user", async (req, res) => {
+    const faceApiData: any = await processImage(req.body.blobId);
+    const faceId = faceApiData.faceId;
     const user: UserDetails = {
         name: req.body.name,
         username: req.body.username,
-        blobId: req.body.blobId
+        blobId: req.body.blobId,
+        faceId
     };
     uploadUser(user);
-    res.end();
+    res.json(faceApiData);
 });
 
 router.put("/photo/:id", (req, res) => {
