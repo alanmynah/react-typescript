@@ -1,9 +1,26 @@
+# camera-app-challenge
+
+## Prerequisites
+
+- [ngrok](https://ngrok.com/)
+
+- Azure storage emulator
+
+- Azure storage explorer
+
 ``` javascript
-npm i
-npm run build
+npm i // to install node_modules
+npm run build // to build webpack
+npm run nodemon // start it on localhost
 ```
 
-# camera-app-challenge
+expose port: `10000` to ngrok:
+
+``` shell
+ngrok http 10000
+```
+
+use the `https` generated link.
 
 ## Requirements
 
