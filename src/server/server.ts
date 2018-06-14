@@ -1,14 +1,26 @@
+import * as dotenv from "dotenv";
 import * as Express from "express";
 import * as path from "path";
+import { json } from "body-parser";
+import { router } from "./api";
+import { createTableIfNotExists } from "./tableStorage";
+import { createContainerIfNotExists } from "./blobStorage";
 
-const app = Express();
+dotenv.config();
+const server = Express();
 
-app.use("/", Express.static(path.resolve("dist")));
-app.use("/node_modules", Express.static(path.resolve("node_modules")));
+server.use(json({limit: "500kb"}));
 
-app.get("/", (req, res) => {
+server.use("/", Express.static(path.resolve("dist")));
+server.use("/node_modules", Express.static(path.resolve("node_modules")));
+server.use("/api", router);
+
+server.get("*", (req, res) => {
     res.sendFile(path.resolve("dist/index.html"));
 });
 
-app.listen(5500);
-console.log("listening on 5500");
+server.listen(process.env.PORT || 5500, () => {
+    console.log("listening on 5500");
+    createTableIfNotExists(),
+    createContainerIfNotExists();
+});

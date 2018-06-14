@@ -1,14 +1,14 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Button, Grid, Image, List, Segment } from "semantic-ui-react";
+import axios from "axios";
+import { PhotoBlob, JsonBlobData, FaceImage } from "../../../server/models";
 
 interface CameraProps {
     width: number;
     height: number;
-}
-
-interface DeviceProps {
-    devices: MediaDeviceInfo[];
+    getId: (id: string) => void;
+    validateFace: (imageData: FaceImage) => void;
 }
 
 interface CameraState {
@@ -18,6 +18,9 @@ interface CameraState {
     facingMode: string;
     constraints: MediaTrackSupportedConstraints;
     devices: MediaDeviceInfo[];
+    blobId: string;
+    validImage: boolean;
+    faceId: string;
 }
 
 export class Camera extends React.Component<CameraProps, CameraState> {
@@ -30,7 +33,7 @@ export class Camera extends React.Component<CameraProps, CameraState> {
 
     constructor(props: any) {
         super(props);
-        this.takePhoto = this.takePhoto.bind(this);
+        this.takeRegistrationPhoto = this.takeRegistrationPhoto.bind(this);
         this.paintToCanvas = this.paintToCanvas.bind(this);
         this.flipCamera = this.flipCamera.bind(this);
         this.state = {
@@ -39,7 +42,10 @@ export class Camera extends React.Component<CameraProps, CameraState> {
             stream: undefined,
             facingMode: "",
             constraints: {},
-            devices: []
+            devices: [],
+            blobId: "",
+            validImage: false,
+            faceId: ""
         };
     }
 
@@ -62,7 +68,7 @@ export class Camera extends React.Component<CameraProps, CameraState> {
                             </Segment>
                         </Grid.Row>
                         <Grid.Row>
-                            <Button className="button" onClick={this.takePhoto} icon="camera" />
+                            <Button className="button" onClick={this.takeRegistrationPhoto} icon="camera" />
                             <Button className="button" onClick={this.flipCamera}>Flip Camera</Button>
                         </Grid.Row>
                     </Grid>
@@ -80,24 +86,6 @@ export class Camera extends React.Component<CameraProps, CameraState> {
                     className="canvas"
                     ref={(input) => { this.canvas = input; }}
                 />
-                <div>
-                    <div>
-                        <span>Width: {this.state.width}</span>
-                        <br/>
-                        <span>Height: {this.state.height}</span>
-                    </div>
-                    <span>{this.state.facingMode}</span>
-                    {this.state.devices.map((device) => {
-                        return (
-                            <ul>
-                                <li>Devices:</li>
-                                <li>{device.deviceId}</li>
-                                <li>{device.kind}</li>
-                                <li>{device.groupId}</li>
-                            </ul>
-                        );
-                    })}
-                </div>
             </Grid >
         );
     }
@@ -166,8 +154,27 @@ export class Camera extends React.Component<CameraProps, CameraState> {
             : this.setStream(this.userFacingMode);
     }
 
-    private async takePhoto() {
-        const photo = this.canvas.toDataURL("image/png");
-        this.photo.setAttribute("src", photo);
+    private takeRegistrationPhoto() {
+        const photo: PhotoBlob = {
+            blobId: "blobname",
+            text: this.canvas.toDataURL("image/jpeg")
+        };
+        axios.post("api/photo", photo)
+            .then((response) => {
+                console.dir(response);
+                this.photo.setAttribute("src", response.data.imageUrl);
+                this.setState({
+                    blobId: response.data.blobId,
+                    validImage: response.data.hasFace,
+                    faceId: response.data.faceId,
+                });
+            }).then(() => {
+                this.props.getId(this.state.blobId);
+                const imageData: FaceImage = {
+                    isValidImage: this.state.validImage,
+                    faceId: this.state.faceId
+                };
+                this.props.validateFace(imageData);
+            });
     }
 }

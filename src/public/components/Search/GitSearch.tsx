@@ -1,12 +1,8 @@
 import * as React from "react";
 import { Card, Container, Header, List } from "semantic-ui-react";
-import { StatsPage } from "../Stats/StatsPage";
+import { StatsPage } from "./Stats/StatsPage";
 import { Repository } from "./model";
 import { SearchBar, SearchBarState } from "./SearchBar";
-
-// TODO: -overall things left to do, read below
-// - [] tests - error codes
-// - [] minifying
 
 interface GitSearchState {
   repoLoaded: boolean;
@@ -40,7 +36,7 @@ export class GitSearch extends React.Component<{}, GitSearchState> {
 
   public render() {
     return (
-      <Container text style={{ marginTop: "7em" }}>
+      <div>
         <Header as="h1">This is a GitHub Search Bar</Header>
         <p>{ this.handleErrors(this.state.error) }</p>
         <SearchBar getSelectedRepositoryKey={this.getRepository}/>
@@ -48,7 +44,7 @@ export class GitSearch extends React.Component<{}, GitSearchState> {
         {this.state.repoLoaded
           ? <StatsPage repository={this.state.repository}/>
           : null}
-      </Container>
+      </div>
     );
   }
 
