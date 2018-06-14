@@ -14,11 +14,13 @@ npm run build // to build webpack
 npm run nodemon // start it on localhost
 ```
 
-expose port: `10000` to ngrok:
+expose (*default azure local blob storage emulator*) port: `10000`  to ngrok:
 
 ``` shell
 ngrok http 10000
 ```
+
+if your default port is different, please update it in `.env` file
 
 use the `https` generated link.
 
