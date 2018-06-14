@@ -46,17 +46,11 @@ export const retrieveBlobUrl = async (blobId: string) => {
     return blobUrl;
 };
 
-export const retrieveBlobUrlWithSasToken = async (blobId: string) => {
-    // sasToken might be required for production
-    const sasToken = blobService.generateSharedAccessSignature(
-        containerName,
-        blobId, {
-            AccessPolicy: {
-                Permissions: "Read",
-                Expiry: storage.date.hoursFromNow(2)
-        }});
-    const blobUrl = await blobService.getUrl(containerName, blobId, sasToken);
-    return blobUrl;
+export const retrieveNgrokBlobUrl = async (blobId: string) => {
+    const localPort = process.env.LOCAL_BLOB_PORT;
+    const ngrokPort = process.env.NGROK_TO_BLOB_PORT;
+    const localUrl = await retrieveBlobUrl(blobId);
+    return localUrl.replace(localPort, ngrokPort);
 };
 
 export const deleteImage = async () => {
