@@ -1,6 +1,6 @@
 import * as storage from "azure-storage";
 import * as uuid from "uuid";
-import { UserDetails } from "./models";
+import { UserDetails, TableTask } from "./models";
 
 const devStorageCredentials = storage.generateDevelopmentStorageCredentials();
 
@@ -19,12 +19,13 @@ export const createTableIfNotExists = async () => {
 };
 
 export const uploadUser = async (userDetails: UserDetails) => {
-    const task = {
+    const task: TableTask = {
         PartitionKey: entityGenerator.String("users"),
         RowKey: entityGenerator.String(`${uuid.v1()}`),
         name: userDetails.name,
         username: userDetails.username,
-        blobId: userDetails.blobId
+        blobId: userDetails.blobId,
+        faceId: userDetails.faceId
     };
 
     await blobService.insertEntity(tableName, task, (error) => {
