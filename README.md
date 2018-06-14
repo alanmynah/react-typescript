@@ -22,6 +22,12 @@ ngrok http 10000
 
 use the `https` generated link.
 
+Please note, that all the committed environment variables are either local or for trial accounts specific to this project. They are committed for educational purposes.
+
+### *Don't expose your production keys to the outside world*
+
+If you are using this repo, replace the keys as needed and add `.env` file to `.gitignore`.
+
 ## Requirements
 
 ### Registration

@@ -6,8 +6,8 @@ export const processImage = async (imageId: string) => {
     const uriBase = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect";
 
     // const imageUrl = "https://upload.wikimedia.org/wikipedia/commons/3/37/Dagestani_man_and_woman.jpg";
-    const imageUrl = await retrieveBlobUrlWithSasToken(imageId);
-    console.log(imageUrl);
+    // const imageUrl = await retrieveBlobUrl(imageId);
+    const imageUrl = "https://8e210bc1.ngrok.io/devstoreaccount1/image-container/a7744af0-6ee6-11e8-be63-954e37460bf2";
     const params = {
         returnFaceId: "true",
         returnFaceLandmarks: "false",
@@ -30,6 +30,8 @@ export const processImage = async (imageId: string) => {
                 reject(error);
             }
             const jsonResponse = JSON.parse(body);
+            // To future me:
+            // need to save the faceId returned in this response! daaa!
             resolve(jsonResponse);
         });
     });
