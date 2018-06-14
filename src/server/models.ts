@@ -7,6 +7,11 @@ export interface TableTask {
     faceId: string;
 }
 
+export interface FaceImage {
+    isValidImage: boolean;
+    faceId: string;
+}
+
 export interface UserDetails {
     name: string;
     username: string;
@@ -22,4 +27,6 @@ export interface PhotoBlob {
 export interface JsonBlobData {
     blobId: string;
     imageUrl: {};
+    faceId: string;
+    hasFace: boolean;
 }

@@ -2,12 +2,13 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Button, Grid, Image, List, Segment } from "semantic-ui-react";
 import axios from "axios";
-import { PhotoBlob, JsonBlobData } from "../../../server/models";
+import { PhotoBlob, JsonBlobData, FaceImage } from "../../../server/models";
 
 interface CameraProps {
     width: number;
     height: number;
-    getId: any;
+    getId: (id: string) => void;
+    validateFace: (imageData: FaceImage) => void;
 }
 
 interface CameraState {
@@ -18,6 +19,8 @@ interface CameraState {
     constraints: MediaTrackSupportedConstraints;
     devices: MediaDeviceInfo[];
     blobId: string;
+    validImage: boolean;
+    faceId: string;
 }
 
 export class Camera extends React.Component<CameraProps, CameraState> {
@@ -40,7 +43,9 @@ export class Camera extends React.Component<CameraProps, CameraState> {
             facingMode: "",
             constraints: {},
             devices: [],
-            blobId: ""
+            blobId: "",
+            validImage: false,
+            faceId: ""
         };
     }
 
@@ -155,14 +160,21 @@ export class Camera extends React.Component<CameraProps, CameraState> {
             text: this.canvas.toDataURL("image/jpeg")
         };
         axios.post("api/photo", photo)
-        .then((response) => {
-            console.dir(response);
-            this.photo.setAttribute("src", response.data.imageUrl);
-            this.setState({
-                blobId: response.data.blobId
+            .then((response) => {
+                console.dir(response);
+                this.photo.setAttribute("src", response.data.imageUrl);
+                this.setState({
+                    blobId: response.data.blobId,
+                    validImage: response.data.hasFace,
+                    faceId: response.data.faceId,
+                });
+            }).then(() => {
+                this.props.getId(this.state.blobId);
+                const imageData: FaceImage = {
+                    isValidImage: this.state.validImage,
+                    faceId: this.state.faceId
+                };
+                this.props.validateFace(imageData);
             });
-        }).then(() => {
-            this.props.getId(this.state.blobId);
-        });
     }
 }

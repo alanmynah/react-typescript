@@ -4,7 +4,7 @@ import { uploadPhotoAndRetrieveUrl } from "./blobStorage";
 import { uploadUser } from "./tableStorage";
 import { UserDetails, PhotoBlob, JsonBlobData } from "./models";
 import { v1 } from "uuid";
-import { processImage } from "./faceApi";
+import { detectFace } from "./faceApi";
 
 export const router = Express.Router();
 
@@ -19,26 +19,27 @@ router.post("/photo", async (req, res) => {
     };
 
     const imageUrl = await uploadPhotoAndRetrieveUrl(photoBlob);
+    const faceId = await detectFace(photoBlob.blobId);
+    const hasFace = faceId ? true : false;
 
     const data: JsonBlobData = {
         blobId: photoBlob.blobId,
-        imageUrl
+        imageUrl,
+        hasFace,
+        faceId
     };
 
-    res.status(200).json(data);
+    res.json(data);
 });
 
 router.post("/user", async (req, res) => {
-    const faceApiData: any = await processImage(req.body.blobId);
-    const faceId = faceApiData.faceId;
     const user: UserDetails = {
         name: req.body.name,
         username: req.body.username,
         blobId: req.body.blobId,
-        faceId
+        faceId: req.body.faceId,
     };
     uploadUser(user);
-    res.json(faceApiData);
 });
 
 router.put("/photo/:id", (req, res) => {

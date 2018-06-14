@@ -1,7 +1,7 @@
 import * as request from "request";
 import { retrieveNgrokBlobUrl } from "./blobStorage";
 
-export const processImage = async (imageId: string) => {
+const processImage = async (imageId: string) => {
     const subscriptionKey = process.env.FACE_API_KEY_1;
     const uriDetectBase = process.env.FACE_API_ENDPOINT + "/detect";
 
@@ -29,9 +29,17 @@ export const processImage = async (imageId: string) => {
                 reject(error);
             }
             const jsonResponse = JSON.parse(body);
-            // To future me:
-            // need to save the faceId returned in this response! daaa!
             resolve(jsonResponse);
         });
     });
+};
+
+export const detectFace: any = async (imageId: string) => {
+    const imageData: any = await processImage(imageId);
+    try {
+        return imageData[0].faceId;
+    } catch (error) {
+        console.log("didn't find a face on the image");
+        return undefined;
+    }
 };

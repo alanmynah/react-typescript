@@ -5,14 +5,19 @@ import axios from "axios";
 import { withRouter, Redirect } from "react-router-dom";
 import { ValidationError } from "./ValidationError";
 import { validate } from "./validate";
+import { NoFaceError } from "./NoFaceError";
+import { FaceImage } from "../../../server/models";
 
 interface RegistrationState {
     name: string;
     username: string;
     blobId: string;
+    faceId: string;
     redirect: boolean;
-    displayWarning: boolean;
-    allowedToSubmit: boolean;
+    displayInputWarning: boolean;
+    validName: boolean;
+    displayFacialWarning: boolean;
+    imageHasFace: boolean;
 }
 
 class Registration extends React.Component<any, RegistrationState> {
@@ -24,13 +29,17 @@ class Registration extends React.Component<any, RegistrationState> {
         this.handleUsernameChange = this.handleUsernameChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.getBlobId = this.getBlobId.bind(this);
+        this.confirmImageHasFace = this.confirmImageHasFace.bind(this);
         this.state = {
             name: "",
             username: "",
             blobId: "",
+            faceId: "",
             redirect: false,
-            displayWarning: false,
-            allowedToSubmit: false,
+            displayInputWarning: false,
+            validName: false,
+            displayFacialWarning: false,
+            imageHasFace: false,
         };
     }
 
@@ -52,31 +61,45 @@ class Registration extends React.Component<any, RegistrationState> {
     public validateInputFor(event: any) {
         if (event.target.value === "") {
             this.setState({
-                displayWarning: false,
-                allowedToSubmit: false,
+                displayInputWarning: false,
+                validName: false,
             });
         } else {
             const isValid = validate(event.target.value);
             this.setState({
-                displayWarning: !isValid,
-                allowedToSubmit: isValid,
+                displayInputWarning: !isValid,
+                validName: isValid,
             });
         }
     }
 
-    public getBlobId(id: string) {
+    public getBlobId(blobId: string) {
         this.setState({
-            blobId: id
+            blobId
         });
     }
 
+    public confirmImageHasFace(imageData: FaceImage) {
+        console.log(imageData.isValidImage);
+        this.setState({
+            displayFacialWarning: !imageData.isValidImage,
+            imageHasFace: imageData.isValidImage
+        });
+        if (imageData.isValidImage) {
+            this.setState({
+                faceId: imageData.faceId,
+            });
+        }
+    }
+
     public handleSubmit = () => {
-        const { name, username, blobId } = this.state;
+        const { name, username, blobId, faceId } = this.state;
 
         axios.post(this.apiURL, {
             name,
             username,
-            blobId
+            blobId,
+            faceId
         });
         this.setState ({
             redirect: true
@@ -84,20 +107,21 @@ class Registration extends React.Component<any, RegistrationState> {
     }
 
     public render() {
-    const { name, username, allowedToSubmit, redirect, displayWarning } = this.state;
+    const { name, username, validName, displayInputWarning, imageHasFace, displayFacialWarning, redirect } = this.state;
 
     return (
         <div>
-            {(displayWarning) && <ValidationError />}
+            {displayInputWarning && <ValidationError />}
+            {displayFacialWarning && <NoFaceError /> }
             <Form onSubmit={this.handleSubmit}>
                 <Form.Group>
                     <Form.Input placeholder="Name" name="name" value={name} onChange={this.handleNameChange} />
                     <Form.Input placeholder="Username" name="username" value={username} onChange={this.handleUsernameChange} />
-                    {(allowedToSubmit) && <Form.Button content="Submit"/>}
+                    {(validName && imageHasFace) && <Form.Button content="Submit"/>}
                 </Form.Group>
                 <br/>
             </Form>
-            <Camera width={320} height={280} getId={this.getBlobId}/>
+            <Camera width={320} height={280} getId={this.getBlobId} validateFace={this.confirmImageHasFace}/>
             {redirect && <Redirect to="thankyou" push={true} />}
         </div>
         );
