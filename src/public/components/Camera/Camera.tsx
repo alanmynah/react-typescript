@@ -55,6 +55,10 @@ export class Camera extends React.Component<CameraProps, CameraState> {
         this.getDevices();
     }
 
+    public async componentWillUnmount() {
+        this.video.srcObject = null;
+    }
+
     public render() {
         return (
             <Grid container columns={2} stackable className="grid">
@@ -118,6 +122,7 @@ export class Camera extends React.Component<CameraProps, CameraState> {
                 facingMode: mode
                 });
             this.video.srcObject = this.state.stream;
+            this.video.play();
         } catch (error) {
             const constraints = {
                 video: true,
