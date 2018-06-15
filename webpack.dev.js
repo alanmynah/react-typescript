@@ -2,7 +2,6 @@ const path = require("path");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const extractSass = new ExtractTextPlugin("style.css");
 const cleanWebpackPlugin = new CleanWebpackPlugin(["dist"]);
@@ -10,9 +9,6 @@ const htmlPlugin = new HtmlWebpackPlugin({
     template: "./index.html",
     inject: true,
     title: "React-Typescript!"
-});
-const uglifyJsPlugin = new UglifyJsPlugin({
-    sourceMap: true
 });
 
 module.exports = [
