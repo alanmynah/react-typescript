@@ -8,7 +8,7 @@ import { validate } from "./validate";
 import { NoFaceError } from "./Errors/NoFaceError";
 import { FaceImage } from "../../../server/models";
 
-interface RegistrationState {
+interface LoginState {
     name: string;
     username: string;
     blobId: string;
@@ -20,14 +20,14 @@ interface RegistrationState {
     imageHasFace: boolean;
 }
 
-class Registration extends React.Component<any, RegistrationState> {
+class Login extends React.Component<any, LoginState> {
     private readonly apiURL = "/api/user";
 
     constructor(props: any) {
         super(props);
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handleUsernameChange = this.handleUsernameChange.bind(this);
-        this.handleRegistration = this.handleRegistration.bind(this);
+        this.handleLogin = this.handleLogin.bind(this);
         this.getBlobId = this.getBlobId.bind(this);
         this.confirmImageHasFace = this.confirmImageHasFace.bind(this);
         this.state = {
@@ -92,7 +92,7 @@ class Registration extends React.Component<any, RegistrationState> {
         }
     }
 
-    public handleRegistration = () => {
+    public handleLogin = () => {
         const { name, username, blobId, faceId } = this.state;
 
         axios.post(this.apiURL, {
@@ -113,7 +113,7 @@ class Registration extends React.Component<any, RegistrationState> {
         <div>
             {displayInputWarning && <ValidationError />}
             {displayFacialWarning && <NoFaceError /> }
-            <Form onSubmit={this.handleRegistration}>
+            <Form onSubmit={this.handleLogin}>
                 <Form.Group>
                     <Form.Input placeholder="Name" name="name" value={name} onChange={this.handleNameChange} />
                     <Form.Input placeholder="Username" name="username" value={username} onChange={this.handleUsernameChange} />
@@ -128,4 +128,4 @@ class Registration extends React.Component<any, RegistrationState> {
     }
 }
 
-export default withRouter(Registration);
+export default withRouter(Login);

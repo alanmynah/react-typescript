@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import { Button, Grid, Image, List, Segment } from "semantic-ui-react";
 import axios from "axios";
 import { PhotoBlob, JsonBlobData, FaceImage } from "../../../server/models";
