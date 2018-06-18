@@ -173,7 +173,7 @@ export class Camera extends React.Component<CameraProps, CameraState> {
         this.canvas.height = this.state.height;
         const context = this.canvas.getContext("2d");
         this.setState({
-            originalImage: context.getImageData(0, 0, this.canvas.width, this.canvas.height);
+            originalImage: context.getImageData(0, 0, this.canvas.width, this.canvas.height)
         });
         this.canvasInterval = setInterval(() => {
             context.drawImage(video, 0, 0, this.canvas.width, this.canvas.height);
