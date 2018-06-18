@@ -48,7 +48,6 @@ class Registration extends React.Component<any, RegistrationState> {
             name: event.target.value
         });
         this.validateInputFor(event);
-
     }
 
     public handleUsernameChange(event: any) {

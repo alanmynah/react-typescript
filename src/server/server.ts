@@ -1,5 +1,5 @@
-import * as dotenv from "dotenv";
 import * as Express from "express";
+import * as dotenv from "dotenv";
 import * as path from "path";
 import { json } from "body-parser";
 import { router } from "./api";
@@ -19,8 +19,8 @@ server.get("*", (req, res) => {
     res.sendFile(path.resolve("dist/index.html"));
 });
 
-server.listen(process.env.PORT || 5500, () => {
-    console.log("listening on 5500");
+server.listen(process.env.PORT || 6500, () => {
+    console.log("listening on 6500");
     createTableIfNotExists(),
     createContainerIfNotExists();
 });
