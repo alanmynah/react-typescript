@@ -12,7 +12,14 @@ const htmlPlugin = new HtmlWebpackPlugin({
     title: "React-Typescript!"
 });
 const uglifyJsPlugin = new UglifyJsPlugin({
-    sourceMap: true
+    sourceMap: true,
+    uglifyOptions: {
+        comments: false,
+        compress: {
+            warnings: false,
+            drop_console: true
+        }
+    }
 });
 
 module.exports = [
