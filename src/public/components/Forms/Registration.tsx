@@ -14,14 +14,14 @@ interface RegistrationState {
     blobId: string;
     faceId: string;
     redirect: boolean;
-    displayInputWarning: boolean;
-    validName: boolean;
-    displayFacialWarning: boolean;
+    hasInputWarning: boolean;
+    isValidName: boolean;
+    hasFacialWarning: boolean;
     imageHasFace: boolean;
 }
 
 class Registration extends React.Component<any, RegistrationState> {
-    private readonly apiURL = "/api/user";
+    private readonly apiURL = "/api/registration";
 
     constructor(props: any) {
         super(props);
@@ -36,9 +36,9 @@ class Registration extends React.Component<any, RegistrationState> {
             blobId: "",
             faceId: "",
             redirect: false,
-            displayInputWarning: false,
-            validName: false,
-            displayFacialWarning: false,
+            hasInputWarning: false,
+            isValidName: false,
+            hasFacialWarning: false,
             imageHasFace: false,
         };
     }
@@ -60,14 +60,14 @@ class Registration extends React.Component<any, RegistrationState> {
     public validateInputFor(event: any) {
         if (event.target.value === "") {
             this.setState({
-                displayInputWarning: false,
-                validName: false,
+                hasInputWarning: false,
+                isValidName: false,
             });
         } else {
             const isValid = validate(event.target.value);
             this.setState({
-                displayInputWarning: !isValid,
-                validName: isValid,
+                hasInputWarning: !isValid,
+                isValidName: isValid,
             });
         }
     }
@@ -81,7 +81,7 @@ class Registration extends React.Component<any, RegistrationState> {
     public confirmImageHasFace(imageData: FaceImage) {
         console.log(imageData.isValidImage);
         this.setState({
-            displayFacialWarning: !imageData.isValidImage,
+            hasFacialWarning: !imageData.isValidImage,
             imageHasFace: imageData.isValidImage
         });
         if (imageData.isValidImage) {
@@ -106,17 +106,17 @@ class Registration extends React.Component<any, RegistrationState> {
     }
 
     public render() {
-    const { name, username, validName, displayInputWarning, imageHasFace, displayFacialWarning, redirect } = this.state;
+    const { name, username, isValidName, hasInputWarning, imageHasFace, hasFacialWarning, redirect } = this.state;
 
     return (
         <div>
-            {displayInputWarning && <ValidationError />}
-            {displayFacialWarning && <NoFaceError /> }
+            {hasInputWarning && <ValidationError />}
+            {hasFacialWarning && <NoFaceError /> }
             <Form onSubmit={this.handleRegistration}>
                 <Form.Group>
                     <Form.Input placeholder="Name" name="name" value={name} onChange={this.handleNameChange} />
                     <Form.Input placeholder="Username" name="username" value={username} onChange={this.handleUsernameChange} />
-                    {(validName && imageHasFace) && <Form.Button content="Submit"/>}
+                    {(isValidName && imageHasFace) && <Form.Button content="Submit"/>}
                 </Form.Group>
                 <br/>
             </Form>
