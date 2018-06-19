@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Form } from "semantic-ui-react";
+import { Form, Button } from "semantic-ui-react";
 import { Camera } from "../Camera/Camera";
 import axios from "axios";
 import { withRouter, Redirect } from "react-router-dom";
@@ -13,15 +13,17 @@ interface LoginState {
     username: string;
     blobId: string;
     faceId: string;
-    redirect: boolean;
-    displayInputWarning: boolean;
-    validName: boolean;
-    displayFacialWarning: boolean;
+    redirectToRegistration: boolean;
+    hasInputWarning: boolean;
+    isValidName: boolean;
+    hasFacialWarning: boolean;
+    hasLoginError: boolean;
     imageHasFace: boolean;
+    isAuthorised: boolean;
 }
 
 class Login extends React.Component<any, LoginState> {
-    private readonly apiURL = "/api/user";
+    private readonly apiURL = "/api/login";
 
     constructor(props: any) {
         super(props);
@@ -35,11 +37,13 @@ class Login extends React.Component<any, LoginState> {
             username: "",
             blobId: "",
             faceId: "",
-            redirect: false,
-            displayInputWarning: false,
-            validName: false,
-            displayFacialWarning: false,
+            redirectToRegistration: false,
+            hasInputWarning: false,
+            isValidName: false,
+            hasFacialWarning: false,
+            hasLoginError: false,
             imageHasFace: false,
+            isAuthorised: false
         };
     }
 
@@ -61,14 +65,14 @@ class Login extends React.Component<any, LoginState> {
     public validateInputFor(event: any) {
         if (event.target.value === "") {
             this.setState({
-                displayInputWarning: false,
-                validName: false,
+                hasInputWarning: false,
+                isValidName: false,
             });
         } else {
             const isValid = validate(event.target.value);
             this.setState({
-                displayInputWarning: !isValid,
-                validName: isValid,
+                hasInputWarning: !isValid,
+                isValidName: isValid,
             });
         }
     }
@@ -82,7 +86,7 @@ class Login extends React.Component<any, LoginState> {
     public confirmImageHasFace(imageData: FaceImage) {
         console.log(imageData.isValidImage);
         this.setState({
-            displayFacialWarning: !imageData.isValidImage,
+            hasFacialWarning: !imageData.isValidImage,
             imageHasFace: imageData.isValidImage
         });
         if (imageData.isValidImage) {
@@ -100,31 +104,51 @@ class Login extends React.Component<any, LoginState> {
             username,
             blobId,
             faceId
-        });
-        this.setState ({
-            redirect: true
-        });
+        }).then((response => {
+            if (response.status === 200) {
+                this.setState ({
+                    isAuthorised: true
+                });
+            }
+        }));
+
     }
 
     public render() {
-    const { name, username, validName, displayInputWarning, imageHasFace, displayFacialWarning, redirect } = this.state;
+    const {
+        name,
+        username,
+        isValidName,
+        hasInputWarning,
+        imageHasFace,
+        hasFacialWarning,
+        redirectToRegistration,
+        isAuthorised } = this.state;
 
     return (
         <div>
-            {displayInputWarning && <ValidationError />}
-            {displayFacialWarning && <NoFaceError /> }
+            {hasInputWarning && <ValidationError />}
+            {hasFacialWarning && <NoFaceError /> }
             <Form onSubmit={this.handleLogin}>
                 <Form.Group>
                     <Form.Input placeholder="Name" name="name" value={name} onChange={this.handleNameChange} />
                     <Form.Input placeholder="Username" name="username" value={username} onChange={this.handleUsernameChange} />
-                    {(validName && imageHasFace) && <Form.Button content="Submit"/>}
+                    <Form.Button disabled={!imageHasFace} content="Log in"/>
                 </Form.Group>
-                <br/>
             </Form>
-            <Camera width={320} height={280} getId={this.getBlobId} validateFace={this.confirmImageHasFace}/>
-            {redirect && <Redirect to="thankyou" push={true} />}
+            <br/>
+            <Button onClick={this.redirectToRegistration} content="Register"/>
+            {isValidName && <Camera width={320} height={280} getId={this.getBlobId} validateFace={this.confirmImageHasFace}/>}
+            {redirectToRegistration && <Redirect to="registration" push={true} />}
+            {isAuthorised && <Redirect to="list" push={true} />}
         </div>
         );
+    }
+
+    private redirectToRegistration = () => {
+        this.setState({
+            redirectToRegistration: true
+        });
     }
 }
 

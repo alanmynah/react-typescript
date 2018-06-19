@@ -32,7 +32,7 @@ router.post("/photo", async (req, res) => {
     res.json(data);
 });
 
-router.post("/user", async (req, res) => {
+router.post("/registration", async (req, res) => {
     const user: UserDetails = {
         name: req.body.name,
         username: req.body.username,
@@ -40,12 +40,19 @@ router.post("/user", async (req, res) => {
         faceId: req.body.faceId,
     };
     uploadUser(user);
+    res.end();
 });
 
-router.put("/photo/:id", (req, res) => {
-    res.send({type: "PUT"});
-});
-
-router.delete("/photo/:id", (req, res) => {
-    res.send({type: "DELETE"});
+router.post("/login", async (req, res) => {
+    const user: UserDetails = {
+        name: req.body.name,
+        username: req.body.username,
+        blobId: req.body.blobId,
+        faceId: req.body.faceId,
+    };
+    if (user.name === "alan") {
+        res.status(200).json(user);
+    } else {
+        res.status(401).json(user);
+    }
 });
