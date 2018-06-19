@@ -12,8 +12,6 @@ interface CameraProps {
 }
 
 interface CameraState {
-    width: number;
-    height: number;
     stream: MediaStream;
     originalImage: any;
     facingMode: string;
@@ -42,8 +40,6 @@ export class Camera extends React.Component<CameraProps, CameraState> {
         this.paintCanvasUsingColour = this.paintCanvasUsingColour.bind(this);
         this.flipCamera = this.flipCamera.bind(this);
         this.state = {
-            width: this.props.width,
-            height: this.props.height,
             stream: undefined,
             originalImage: undefined,
             facingMode: "",
@@ -106,7 +102,7 @@ export class Camera extends React.Component<CameraProps, CameraState> {
                     <Segment className="output">
                     <img
                         className="photo"
-                        src={`https://loremflickr.com/${this.state.width}/${this.state.height}`}
+                        src={`https://loremflickr.com/${this.props.width}/${this.props.height}`}
                         ref={(input) => { this.photo = input; }}
                     />
                     </Segment>
@@ -137,8 +133,8 @@ export class Camera extends React.Component<CameraProps, CameraState> {
             this.setState({
                 stream: await navigator.mediaDevices.getUserMedia({
                     video: {
-                        width: this.state.width,
-                        height: this.state.height,
+                        width: this.props.width,
+                        height: this.props.height,
                         facingMode: mode,
                     },
                     audio: false
@@ -169,8 +165,8 @@ export class Camera extends React.Component<CameraProps, CameraState> {
     }
 
     private paintToCanvas(video: HTMLVideoElement) {
-        this.canvas.width = this.state.width;
-        this.canvas.height = this.state.height;
+        this.canvas.width = this.props.width;
+        this.canvas.height = this.props.height;
         const context = this.canvas.getContext("2d");
         this.setState({
             originalImage: context.getImageData(0, 0, this.canvas.width, this.canvas.height)
@@ -195,8 +191,8 @@ export class Camera extends React.Component<CameraProps, CameraState> {
 
     private paintCanvasUsingColour(colour: string, video: HTMLVideoElement) {
         window.clearInterval(this.canvasInterval);
-        this.canvas.width = this.state.width;
-        this.canvas.height = this.state.height;
+        this.canvas.width = this.props.width;
+        this.canvas.height = this.props.height;
         const context = this.canvas.getContext("2d");
         this.canvasInterval = setInterval(() => {
             context.drawImage(video, 0, 0, this.canvas.width, this.canvas.height);
