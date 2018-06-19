@@ -14,12 +14,12 @@ npm run build // to build webpack
 npm run nodemon // start it on localhost
 ```
 
-expose (*default azure local blob storage emulator*) port: `10000`  to ngrok:
+expose (*default azure local blob storage emulator*) port: `10000`  to ngrok, so faceApi can access it. :
 
 ``` shell
 ngrok http 10000
 ```
-
+(also note, that as the trial expired, the api is mocked.)
 if your default port is different, please update it in `.env` file
 
 use the `https` generated link.

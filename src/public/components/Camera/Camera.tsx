@@ -33,12 +33,6 @@ export class Camera extends React.Component<CameraProps, CameraState> {
 
     constructor(props: any) {
         super(props);
-        this.applyFilter = this.applyFilter.bind(this);
-        this.removeFilter = this.removeFilter.bind(this);
-        this.takeRegistrationPhoto = this.takeRegistrationPhoto.bind(this);
-        this.paintToCanvas = this.paintToCanvas.bind(this);
-        this.paintCanvasUsingColour = this.paintCanvasUsingColour.bind(this);
-        this.flipCamera = this.flipCamera.bind(this);
         this.state = {
             stream: undefined,
             originalImage: undefined,
@@ -51,13 +45,13 @@ export class Camera extends React.Component<CameraProps, CameraState> {
         };
     }
 
-    public async componentDidMount() {
+    public componentDidMount() {
         this.setStream(this.userFacingMode);
         this.paintToCanvas(this.video);
         this.getDevices();
     }
 
-    public async componentWillUnmount() {
+    public componentWillUnmount() {
         this.video.srcObject = null;
     }
 
@@ -114,7 +108,7 @@ export class Camera extends React.Component<CameraProps, CameraState> {
         );
     }
 
-    private async getDevices() {
+    private getDevices = async () => {
         try {
             const gotConstraints = await navigator.mediaDevices.getSupportedConstraints();
             console.dir(gotConstraints);
@@ -128,7 +122,7 @@ export class Camera extends React.Component<CameraProps, CameraState> {
         }
     }
 
-    private async setStream(mode: string) {
+    private setStream = async (mode: string) => {
         try {
             this.setState({
                 stream: await navigator.mediaDevices.getUserMedia({
@@ -164,7 +158,7 @@ export class Camera extends React.Component<CameraProps, CameraState> {
         }
     }
 
-    private paintToCanvas(video: HTMLVideoElement) {
+    private paintToCanvas = (video: HTMLVideoElement) => {
         this.canvas.width = this.props.width;
         this.canvas.height = this.props.height;
         const context = this.canvas.getContext("2d");
@@ -176,7 +170,7 @@ export class Camera extends React.Component<CameraProps, CameraState> {
         }, 16);
     }
 
-    private removeFilter() {
+    private removeFilter = () => {
         window.clearInterval(this.canvasInterval);
         const context = this.canvas.getContext("2d");
         context.putImageData(this.state.originalImage, 0, 0);
@@ -185,11 +179,11 @@ export class Camera extends React.Component<CameraProps, CameraState> {
         }, 16);
     }
 
-    private applyFilter(filterColour: string) {
+    private applyFilter = (filterColour: string) => {
         this.paintCanvasUsingColour(filterColour, this.video);
     }
 
-    private paintCanvasUsingColour(colour: string, video: HTMLVideoElement) {
+    private paintCanvasUsingColour = (colour: string, video: HTMLVideoElement) => {
         window.clearInterval(this.canvasInterval);
         this.canvas.width = this.props.width;
         this.canvas.height = this.props.height;
@@ -202,13 +196,13 @@ export class Camera extends React.Component<CameraProps, CameraState> {
         }, 16);
     }
 
-    private async flipCamera() {
+    private  flipCamera = async () => {
         this.state.facingMode === this.userFacingMode
             ? this.setStream(this.environmentFacingMode)
             : this.setStream(this.userFacingMode);
     }
 
-    private takeRegistrationPhoto() {
+    private takeRegistrationPhoto = () => {
         const photo: PhotoBlob = {
             blobId: "blobname",
             text: this.canvas.toDataURL("image/jpeg")

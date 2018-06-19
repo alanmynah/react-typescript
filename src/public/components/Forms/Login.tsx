@@ -27,11 +27,6 @@ class Login extends React.Component<any, LoginState> {
 
     constructor(props: any) {
         super(props);
-        this.handleNameChange = this.handleNameChange.bind(this);
-        this.handleUsernameChange = this.handleUsernameChange.bind(this);
-        this.handleLogin = this.handleLogin.bind(this);
-        this.getBlobId = this.getBlobId.bind(this);
-        this.confirmImageHasFace = this.confirmImageHasFace.bind(this);
         this.state = {
             name: "",
             username: "",
@@ -45,73 +40,6 @@ class Login extends React.Component<any, LoginState> {
             imageHasFace: false,
             isAuthorised: false
         };
-    }
-
-    public handleNameChange(event: any) {
-        this.setState({
-            name: event.target.value
-        });
-        this.validateInputFor(event);
-
-    }
-
-    public handleUsernameChange(event: any) {
-        this.setState({
-            username: event.target.value
-        });
-        this.validateInputFor(event);
-    }
-
-    public validateInputFor(event: any) {
-        if (event.target.value === "") {
-            this.setState({
-                hasInputWarning: false,
-                isValidName: false,
-            });
-        } else {
-            const isValid = validate(event.target.value);
-            this.setState({
-                hasInputWarning: !isValid,
-                isValidName: isValid,
-            });
-        }
-    }
-
-    public getBlobId(blobId: string) {
-        this.setState({
-            blobId
-        });
-    }
-
-    public confirmImageHasFace(imageData: FaceImage) {
-        console.log(imageData.isValidImage);
-        this.setState({
-            hasFacialWarning: !imageData.isValidImage,
-            imageHasFace: imageData.isValidImage
-        });
-        if (imageData.isValidImage) {
-            this.setState({
-                faceId: imageData.faceId,
-            });
-        }
-    }
-
-    public handleLogin = () => {
-        const { name, username, blobId, faceId } = this.state;
-
-        axios.post(this.apiURL, {
-            name,
-            username,
-            blobId,
-            faceId
-        }).then((response => {
-            if (response.status === 200) {
-                this.setState ({
-                    isAuthorised: true
-                });
-            }
-        }));
-
     }
 
     public render() {
@@ -143,6 +71,73 @@ class Login extends React.Component<any, LoginState> {
             {isAuthorised && <Redirect to="list" push={true} />}
         </div>
         );
+    }
+
+    private handleNameChange = (event: any) => {
+        this.setState({
+            name: event.target.value
+        });
+        this.validateInputFor(event);
+
+    }
+
+    private handleUsernameChange = (event: any) => {
+        this.setState({
+            username: event.target.value
+        });
+        this.validateInputFor(event);
+    }
+
+    private validateInputFor = (event: any) => {
+        if (event.target.value === "") {
+            this.setState({
+                hasInputWarning: false,
+                isValidName: false,
+            });
+        } else {
+            const isValid = validate(event.target.value);
+            this.setState({
+                hasInputWarning: !isValid,
+                isValidName: isValid,
+            });
+        }
+    }
+
+    private getBlobId = (blobId: string) => {
+        this.setState({
+            blobId
+        });
+    }
+
+    private confirmImageHasFace = (imageData: FaceImage) => {
+        console.log(imageData.isValidImage);
+        this.setState({
+            hasFacialWarning: !imageData.isValidImage,
+            imageHasFace: imageData.isValidImage
+        });
+        if (imageData.isValidImage) {
+            this.setState({
+                faceId: imageData.faceId,
+            });
+        }
+    }
+
+    private handleLogin = () => {
+        const { name, username, blobId, faceId } = this.state;
+
+        axios.post(this.apiURL, {
+            name,
+            username,
+            blobId,
+            faceId
+        }).then((response => {
+            if (response.status === 200) {
+                this.setState ({
+                    isAuthorised: true
+                });
+            }
+        }));
+
     }
 
     private redirectToRegistration = () => {

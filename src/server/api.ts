@@ -1,7 +1,7 @@
 import * as Express from "express";
 import * as path from "path";
 import { uploadPhotoAndRetrieveUrl } from "./blobStorage";
-import { uploadUser } from "./tableStorage";
+import { uploadUser, checkUserExists } from "./tableStorage";
 import { UserDetails, PhotoBlob, JsonBlobData } from "./models";
 import { v1 } from "uuid";
 import { detectFace } from "./faceApi";
@@ -50,9 +50,7 @@ router.post("/login", async (req, res) => {
         blobId: req.body.blobId,
         faceId: req.body.faceId,
     };
-    if (user.name === "alan") {
-        res.status(200).json(user);
-    } else {
-        res.status(401).json(user);
-    }
+    const isAutorised = await checkUserExists(user);
+    console.log(isAutorised);
+    isAutorised ? res.status(200).json(user) : res.status(401).json(user);
 });
