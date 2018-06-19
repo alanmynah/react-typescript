@@ -125,11 +125,20 @@ class Login extends React.Component<any, LoginState> {
     private handleLogin = () => {
         const { name, username, blobId, faceId } = this.state;
 
+        const ipAddress = axios.get("http://gd.geobytes.com/GetCityDetails?callback=?")
+            .then((data) => {
+                console.log(JSON.stringify(data, null, 2));
+            })
+            .catch((error) => {
+                console.dir(error);
+            });
+
         axios.post(this.apiURL, {
             name,
             username,
             blobId,
-            faceId
+            faceId,
+            ipAddress
         }).then((response => {
             if (response.status === 200) {
                 this.setState ({

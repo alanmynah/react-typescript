@@ -1,10 +1,21 @@
-export interface TableTask {
+export interface UserTableTask {
     PartitionKey: any;
     RowKey: any;
     name: string;
     username: string;
     blobId: string;
     faceId: string;
+}
+
+export interface AttemptsTableTask {
+    PartitionKey: any;
+    RowKey: any;
+    name: string;
+    username: string;
+    blobId: string;
+    faceId: string;
+    time: string;
+    isSuccessfulAttempt: boolean;
 }
 
 export interface FaceImage {
