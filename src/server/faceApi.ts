@@ -1,12 +1,11 @@
 import * as request from "request";
 import { retrieveNgrokBlobUrl } from "./blobStorage";
+import * as uuid from "uuid";
 
 const processImage = async (imageId: string) => {
     const subscriptionKey = process.env.FACE_API_KEY_1;
     const uriDetectBase = process.env.FACE_API_ENDPOINT + "/detect";
 
-    // const imageUrl = "https://upload.wikimedia.org/wikipedia/commons/3/37/Dagestani_man_and_woman.jpg";
-    // const imageUrl = await retrieveBlobUrl(imageId);
     const imageUrl = await retrieveNgrokBlobUrl(imageId);
     const params = {
         returnFaceId: "true",
@@ -37,7 +36,10 @@ const processImage = async (imageId: string) => {
 export const detectFace: any = async (imageId: string) => {
     const imageData: any = await processImage(imageId);
     try {
-        return imageData[0].faceId;
+        // faceapi trial period expired.
+        // return imageData[0].faceId;
+        // this will be returning a random guid to simulate a faceId returned from the api
+        return uuid.v1().toString();
     } catch (error) {
         console.log("didn't find a face on the image");
         return undefined;
